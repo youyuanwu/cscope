@@ -47,6 +47,7 @@
 #endif
 #include <ctype.h>
 
+#include "w32utils.h"
 int	selecting;
 unsigned int   curdispline = 0;
 
@@ -909,6 +910,7 @@ countrefs(void)
 	    disprefs = 0;
 	    return;
 	}
+	to_longpath(file, sizeof(file));
 	if ((i = strlen(pathcomponents(file, dispcomponents))) > filelen) {
 	    filelen = i;
 	}

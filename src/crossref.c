@@ -45,6 +45,8 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "w32utils.h"
+
 /* convert long to a string in base BASE notation */
 #define	ltobase(value)                     \
 do {                                       \
@@ -216,6 +218,7 @@ savesymbol(int token, int num)
 void
 putfilename(char *srcfile)
 {
+    srcfile = get_shortpath(srcfile);
 	/* check for file system out of space */
 	/* note: dbputc is not used to avoid lint complaint */
 	if (putc(NEWFILE, newrefs) == EOF) {
