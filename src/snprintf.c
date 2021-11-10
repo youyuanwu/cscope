@@ -161,7 +161,7 @@
  * Autoconf macros for handling step 1 and step 2 are available at
  * <http://www.jhweiss.de/software/snprintf.html>.
  */
-
+#define HAVE_CONFIG_H 1
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif	/* HAVE_CONFIG_H */
