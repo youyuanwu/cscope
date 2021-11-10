@@ -45,3 +45,6 @@ mkinstalldirs
 ylwrap
 configure
 aclocal.m4
+
+build
+.vscode
