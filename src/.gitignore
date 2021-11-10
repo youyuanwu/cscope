@@ -6,3 +6,5 @@ gscope.c
 .cvsignore
 *~
 .#*
+
+!config.h
