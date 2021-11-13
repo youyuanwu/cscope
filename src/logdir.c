@@ -39,7 +39,7 @@
  *	storage allocation.
  */
 
-#include <unistd.h>
+// #include <unistd.h>
 #include <string.h>
 #include "global.h"
 

@@ -39,7 +39,7 @@
 #define CSCOPE_GLOBAL_H
 
 #include "config.h"
-#include <unistd.h>
+// #include <unistd.h>
 #include <sys/types.h>
 #include <ctype.h>	/* isalpha, isdigit, etc. */
 #include <signal.h>	/* SIGINT and SIGQUIT */

@@ -5,6 +5,14 @@
 
 #define HAVE_STDARG_H 1
 
+#define YY_NO_UNISTD_H 1
+
+#define __MSDOS__ 1
+
+// #ifndef __mode_t_defined
+// typedef unsigned int mode_t
+// #endif
+
 // below code is copied form auto tool
 
 /* config.h.  Generated from config.h.in by configure.  */
@@ -140,7 +148,7 @@
 #define HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/termios.h> header file. */
-#define HAVE_SYS_TERMIOS_H 1
+#define HAVE_SYS_TERMIOS_H 0
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
@@ -216,7 +224,7 @@
 #define STDC_HEADERS 1
 
 /* Use Ncurses? */
-#define USE_NCURSES 1
+// #define USE_NCURSES 1
 
 /* Use SunOS SysV curses? */
 /* #undef USE_SUNOS_CURSES */

@@ -82,7 +82,7 @@ unsigned fldcolumn;		/* input field column */
 const char	dispchars[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 static	int	fldline;		/* input field line */
-static	sigjmp_buf	env;		/* setjmp/longjmp buffer */
+// static	sigjmp_buf	env;		/* setjmp/longjmp buffer */
 static	int	lastdispline;		/* last displayed reference line */
 static	char	lastmsg[MSGLEN + 1];	/* last message displayed */
 static	char	helpstring[] = "Press the ? key for help";
@@ -402,7 +402,7 @@ jumpback(int sig)
 	/* HBB NEW 20031008: try whether reinstating signal handler
 	 * helps... */
 	signal(sig, jumpback);
-	siglongjmp(env, 1);
+	// siglongjmp(env, 1);
 }
 
 BOOL
@@ -425,36 +425,36 @@ search(void)
 	}
 	searchcount = 0;
 	savesig = signal(SIGINT, jumpback);
-	if (sigsetjmp(env, 1) == 0) {
-		f = fields[field].findfcn;
-		if (f == findregexp || f == findstring) {
-			findresult = (*f)(Pattern);
-		} else {
-			if ((nonglobalrefs = myfopen(temp2, "wb")) == NULL) {
-				cannotopen(temp2);
-				return(NO);
-			}
-			if ((rc = findinit(Pattern)) == NOERROR) {
-				(void) dbseek(0L); /* read the first block */
-				findresult = (*f)(Pattern);
-				if (f == findcalledby) 
-					funcexist = (*findresult == 'y');
-				findcleanup();
+	// if (sigsetjmp(env, 1) == 0) {
+	// 	f = fields[field].findfcn;
+	// 	if (f == findregexp || f == findstring) {
+	// 		findresult = (*f)(Pattern);
+	// 	} else {
+	// 		if ((nonglobalrefs = myfopen(temp2, "wb")) == NULL) {
+	// 			cannotopen(temp2);
+	// 			return(NO);
+	// 		}
+	// 		if ((rc = findinit(Pattern)) == NOERROR) {
+	// 			(void) dbseek(0L); /* read the first block */
+	// 			findresult = (*f)(Pattern);
+	// 			if (f == findcalledby) 
+	// 				funcexist = (*findresult == 'y');
+	// 			findcleanup();
 
-				/* append the non-global references */
-				(void) fclose(nonglobalrefs);
-				if ((nonglobalrefs = myfopen(temp2, "rb"))
-				     == NULL) {
-					cannotopen(temp2);
-					return(NO);
-				}
-				while ((c = getc(nonglobalrefs)) != EOF) {
-					(void) putc(c, refsfound);
-				}
-			}
-			(void) fclose(nonglobalrefs);
-		}
-	}
+	// 			/* append the non-global references */
+	// 			(void) fclose(nonglobalrefs);
+	// 			if ((nonglobalrefs = myfopen(temp2, "rb"))
+	// 			     == NULL) {
+	// 				cannotopen(temp2);
+	// 				return(NO);
+	// 			}
+	// 			while ((c = getc(nonglobalrefs)) != EOF) {
+	// 				(void) putc(c, refsfound);
+	// 			}
+	// 		}
+	// 		(void) fclose(nonglobalrefs);
+	// 	}
+	// }
 	signal(SIGINT, savesig);
 
 	/* rewind the cross-reference file */

@@ -35,16 +35,16 @@
  *	process execution functions
  */
 
-#include <unistd.h>
+// #include <unistd.h>
 #include "global.h"
 #include <stdarg.h>
-#include <sys/wait.h>
+// #include <sys/wait.h>
 #include <sys/types.h>      /* pid_t */
 #ifdef __DJGPP__
 #include <process.h>
 #endif
 #if defined(USE_NCURSES) && !defined(RENAMED_NCURSES)
-#include <ncurses.h>
+// #include <ncurses.h>
 #else
 #include <curses.h>
 #endif
@@ -67,43 +67,43 @@ static	pid_t	myfork(void);
 int
 execute(char *a, ...)	/* note: "exec" is already defined on u370 */
 {
-	va_list	ap;
-	int	exitcode = -1;	/* initialize, to avoid warning */
-	char	*argv[BUFSIZ];
-	pid_t	p;
+// 	va_list	ap;
+// 	int	exitcode = -1;	/* initialize, to avoid warning */
+// 	char	*argv[BUFSIZ];
+// 	pid_t	p;
 
-	/* fork and exec the program or shell script */
-	endwin();	/* restore the terminal modes */
-	mousecleanup();
-	fflush(stdout);
-	va_start(ap, a);
-	for (p = 0; (argv[p] = va_arg(ap, char *)) != 0; p++)
-		;
-#ifdef __MSDOS__
-	/* HBB 20010313: in MSDOG, everything is completely different.
-	 * No fork()/exec()/wait(), but rather a single libc call: */
-        exitcode = spawnvp(P_WAIT, a, argv);
-#else
-	if ((p = myfork()) == 0) {
-		myexecvp(a, argv);	/* child */
-	}
-	else {
-		exitcode = join(p);	/* parent */
-	}
-#endif /* MSDOS */
+// 	/* fork and exec the program or shell script */
+// 	endwin();	/* restore the terminal modes */
+// 	mousecleanup();
+// 	fflush(stdout);
+// 	va_start(ap, a);
+// 	for (p = 0; (argv[p] = va_arg(ap, char *)) != 0; p++)
+// 		;
+// #ifdef __MSDOS__
+// 	/* HBB 20010313: in MSDOG, everything is completely different.
+// 	 * No fork()/exec()/wait(), but rather a single libc call: */
+//         exitcode = spawnvp(P_WAIT, a, argv);
+// #else
+// 	if ((p = myfork()) == 0) {
+// 		myexecvp(a, argv);	/* child */
+// 	}
+// 	else {
+// 		exitcode = join(p);	/* parent */
+// 	}
+// #endif /* MSDOS */
 	
-	/* the menu and scrollbar may be changed by the command executed */
-#if UNIXPC || !TERMINFO
-# ifndef __DJGPP__ /* leave CRLF handling as is */      
-	nonl();
-# endif
-	raw();	/* endwin() turns off cbreak mode so restore it */
-	noecho();
-#endif
-	mousemenu();
-	drawscrollbar(topline, nextline);
-	va_end(ap);
-	return(exitcode);
+// 	/* the menu and scrollbar may be changed by the command executed */
+// #if UNIXPC || !TERMINFO
+// # ifndef __DJGPP__ /* leave CRLF handling as is */      
+// 	nonl();
+// # endif
+// 	raw();	/* endwin() turns off cbreak mode so restore it */
+// 	noecho();
+// #endif
+// 	mousemenu();
+// 	drawscrollbar(topline, nextline);
+// 	va_end(ap);
+// 	return(exitcode);
 }
 
 #ifndef __MSDOS__ /* None of the following functions is used there */

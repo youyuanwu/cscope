@@ -42,6 +42,7 @@
 
 #define MAXPATH	200		/* max length for entire name */
 
+#define HAVE_CONFIG_H 1
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #else
@@ -62,6 +63,10 @@ extern	char	**vpdirs;	/* directories (including current) in view path */
 extern	char	vpdirs[MAXDIR][DIRLEN + 1];
 #endif
 extern	int	vpndirs;	/* number of directories in view path */
+
+#ifndef __mode_t_defined
+typedef unsigned int mode_t;
+#endif
 
 void	vpinit(char *current_dir);
 int	vpopen(char *path, int oflag);

@@ -42,11 +42,11 @@
 
 #include <assert.h>
 #if defined(USE_NCURSES) && !defined(RENAMED_NCURSES)
-#include <ncurses.h>
+// #include <ncurses.h>
 #else
 #include <curses.h>
 #endif
-#include <regex.h>
+// #include <regex.h>
 
 /* most of these functions have been optimized so their innermost loops have
  * only one test for the desired character by putting the char and 

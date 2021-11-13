@@ -47,7 +47,7 @@
 #include "vp.h"
 
 #if defined(USE_NCURSES) && !defined(RENAMED_NCURSES)
-#include <ncurses.h>
+// #include <ncurses.h>
 #else
 #include <curses.h>
 #endif
