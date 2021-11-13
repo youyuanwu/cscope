@@ -54,7 +54,8 @@ extern	char	*invpost;	/* inverted index postings */
 extern	char	*newreffile;	/* new cross-reference file name */
 extern	FILE	*newrefs;	/* new cross-reference */
 extern	FILE	*postings;	/* new inverted index postings */
-extern	int	symrefs;	/* cross-reference file */
+// extern	int	symrefs;	/* cross-reference file */
+extern FILE * symrefsf;
 
 extern	INVCONTROL invcontrol;	/* inverted file control structure */
 

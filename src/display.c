@@ -458,7 +458,7 @@ search(void)
 	signal(SIGINT, savesig);
 
 	/* rewind the cross-reference file */
-	(void) lseek(symrefs, (long) 0, 0);
+	rewind(symrefsf);
 	
 	/* reopen the references found file for reading */
 	(void) fclose(refsfound);

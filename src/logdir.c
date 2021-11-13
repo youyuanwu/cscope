@@ -39,7 +39,7 @@
  *	storage allocation.
  */
 
-#include <unistd.h>
+// #include <unistd.h>
 #include <string.h>
 #include "global.h"
 
@@ -60,41 +60,41 @@ nextfield(char *p)
 	return(p);
 }
 
-char *
-logdir(char *name)
-{
-	char	*p;
-	int	i, j;
-	int	pwf;
+// char *
+// logdir(char *name)
+// {
+// 	char	*p;
+// 	int	i, j;
+// 	int	pwf;
 	
-	/* attempt to open the password file */
-	if ((pwf = myopen("/etc/passwd", 0, 0)) == -1)
-		return(0);
+// 	/* attempt to open the password file */
+// 	if ((pwf = myopen("/etc/passwd", 0, 0)) == -1)
+// 		return(0);
 		
-	/* find the matching password entry */
-	do {
-		/* get the next line in the password file */
-		i = read(pwf, line, OURBUFSIZ);
-		for (j = 0; j < i; j++)
-			if (line[j] == '\n')
-				break;
-		/* return a null pointer if the whole file has been read */
-		if (j >= i)
-			return(0);
-		line[++j] = 0;			/* terminate the line */
-		(void) lseek(pwf, (long) (j - i), 1);	/* point at the next line */
-		p = nextfield(line);		/* get the logname */
-	} while (*name != *line ||	/* fast pretest */
-	    strcmp(name, line) != 0);
-	(void) close(pwf);
+// 	/* find the matching password entry */
+// 	do {
+// 		/* get the next line in the password file */
+// 		i = read(pwf, line, OURBUFSIZ);
+// 		for (j = 0; j < i; j++)
+// 			if (line[j] == '\n')
+// 				break;
+// 		/* return a null pointer if the whole file has been read */
+// 		if (j >= i)
+// 			return(0);
+// 		line[++j] = 0;			/* terminate the line */
+// 		(void) lseek(pwf, (long) (j - i), 1);	/* point at the next line */
+// 		p = nextfield(line);		/* get the logname */
+// 	} while (*name != *line ||	/* fast pretest */
+// 	    strcmp(name, line) != 0);
+// 	(void) close(pwf);
 	
-	/* skip the intervening fields */
-	p = nextfield(p);
-	p = nextfield(p);
-	p = nextfield(p);
-	p = nextfield(p);
+// 	/* skip the intervening fields */
+// 	p = nextfield(p);
+// 	p = nextfield(p);
+// 	p = nextfield(p);
+// 	p = nextfield(p);
 	
-	/* return the login directory */
-	(void) nextfield(p);
-	return(p);
-}
+// 	/* return the login directory */
+// 	(void) nextfield(p);
+// 	return(p);
+// }

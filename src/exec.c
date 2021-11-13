@@ -35,7 +35,7 @@
  *	process execution functions
  */
 
-#include <unistd.h>
+// #include <unistd.h>
 #include "global.h"
 #include <stdarg.h>
 #include <sys/wait.h>

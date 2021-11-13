@@ -1001,7 +1001,7 @@ char *
 read_block(void)
 {
 	/* read the next block */
-	blocklen = read(symrefs, block, BUFSIZ);
+	blocklen = fread(block, sizeof(char), BUFSIZ, symrefsf);
 	blockp = block;
 	
 	/* add the search character and end-of-block mark */
@@ -1237,7 +1237,7 @@ dbseek(long offset)
 	int	rc = 0;
 	
 	if ((n = offset / BUFSIZ) != blocknumber) {
-		if ((rc = lseek(symrefs, n * BUFSIZ, 0)) == -1) {
+		if ((rc = fseek(symrefsf, n * BUFSIZ, 0)) == -1) {
 			myperror("Lseek failed");
 			(void) sleep(3);
 			return(rc);

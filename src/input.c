@@ -289,7 +289,8 @@ shellpath(char *out, int limit, char *in)
 	if (*out == '\0') {
 	    v = getenv("HOME");
 	} else {	/* get the home directory of the login name */
-	    v = logdir(out);
+	    // disable
+		//v = logdir(out);
 	}
 	/* copy the directory name if it isn't too big */
 	if (v != NULL && strlen(v) < (lastchar - out)) {

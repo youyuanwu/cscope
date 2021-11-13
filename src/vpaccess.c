@@ -33,7 +33,7 @@
 /* vpaccess - view path version of the access system call */
 
 #include <stdio.h>
-#include <unistd.h>
+// #include <unistd.h>
 #include "vp.h"
 #include <sys/types.h>
  

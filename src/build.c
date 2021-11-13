@@ -69,7 +69,9 @@ char	*reffile = reffile_buf;	/* cross-reference file path name */
 char	*newreffile;		/* new cross-reference file name */
 FILE	*newrefs;		/* new cross-reference */
 FILE	*postings;		/* new inverted index postings */
-int	symrefs = -1;		/* cross-reference file */
+// TODO: remove
+// int	symrefs = -1;		/* cross-reference file */
+FILE * symrefsf;
 
 INVCONTROL invcontrol;		/* inverted file control structure */
 
@@ -160,7 +162,7 @@ void setup_build_filenames(char *reffile)
 void
 opendatabase(void)
 {
-    if ((symrefs = vpopen(reffile, O_BINARY | O_RDONLY)) == -1) {
+    if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
 	cannotopen(reffile);
 	myexit(1);
     }
@@ -179,8 +181,9 @@ opendatabase(void)
 void
 rebuild(void)
 {
-    close(symrefs);
-    if (invertedindex == YES) {
+    //close(symrefs);
+    fclose(symrefsf);
+	if (invertedindex == YES) {
 	invclose(&invcontrol);
 	nsrcoffset = 0;
 	npostings = 0;
@@ -329,7 +332,7 @@ cscope: converting to new symbol database file format\n");
 	    goto force;
 	}
 	/* reopen the old cross-reference file for fast scanning */
-	if ((symrefs = vpopen(reffile, O_BINARY | O_RDONLY)) == -1) {
+	if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
 	    postfatal("cscope: cannot open file %s\n", reffile);
 	    /* NOTREACHED */
 	}
@@ -476,8 +479,8 @@ cscope: converting to new symbol database file format\n");
     fclose(newrefs);
 	
     /* close the old database file */
-    if (symrefs >= 0) {
-	close(symrefs);
+    if (symrefsf != NULL) {
+	fclose(symrefsf);
     }
     if (oldrefs != NULL) {
 	fclose(oldrefs);

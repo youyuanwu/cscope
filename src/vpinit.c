@@ -35,7 +35,7 @@
 #include <stdio.h>	/* stderr */
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+// #include <unistd.h>
 #include "vp.h"
 #include "alloc.h"
 #include "library.h"

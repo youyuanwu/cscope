@@ -32,7 +32,7 @@
 
 #include <stdio.h>
 #include <signal.h>
-#include <unistd.h>
+// #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "global.h"	/* pid_t, shell, and mybasename() */
