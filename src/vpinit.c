@@ -42,6 +42,11 @@
 #include "global.h"
 #include "constants.h"
 
+#ifdef WIN32
+#else
+#include <unistd.h> // for getcwd
+#endif 
+
 #if !NOMALLOC
 char	**vpdirs;	/* directories (including current) in view path */
 #else

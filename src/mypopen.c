@@ -55,46 +55,46 @@
 static pid_t popen_pid[20];
 static void (*tstat)(int);
 
-int
-myopen(char *path, int flag, int mode)
-{
-    /* opens a file descriptor and then sets close-on-exec for the file */
-    int fd;
+// int
+// myopen(char *path, int flag, int mode)
+// {
+//     /* opens a file descriptor and then sets close-on-exec for the file */
+//     int fd;
 
-    /* 20020103: if file is not explicitly in Binary mode, make
-     * sure we override silly Cygwin behaviour of automatic binary
-     * mode for files in "binary mounted" paths */
-#if O_BINARY != O_TEXT
-    if (! (flag | O_BINARY))
-	flag |= O_TEXT;
-#endif
-    if(mode)
-	fd = open(path, flag, mode);
-    else
-	fd = open(path, flag);
+//     /* 20020103: if file is not explicitly in Binary mode, make
+//      * sure we override silly Cygwin behaviour of automatic binary
+//      * mode for files in "binary mounted" paths */
+// #if O_BINARY != O_TEXT
+//     if (! (flag | O_BINARY))
+// 	flag |= O_TEXT;
+// #endif
+//     if(mode)
+// 	fd = open(path, flag, mode);
+//     else
+// 	fd = open(path, flag);
 
-#ifdef __DJGPP__		/* FIXME: test feature, not platform */
-    /* HBB 20010312: DOS GCC doesn't have FD_CLOEXEC (yet), so it 
-     * always fails this call. Have to skip that step */
-    if(fd != -1)
-	return(fd);
-#endif
-    if(fd != -1 && (fcntl(fd, F_SETFD, CLOSE_ON_EXEC) != -1))
-	return(fd);
+// #ifdef __DJGPP__		/* FIXME: test feature, not platform */
+//     /* HBB 20010312: DOS GCC doesn't have FD_CLOEXEC (yet), so it 
+//      * always fails this call. Have to skip that step */
+//     if(fd != -1)
+// 	return(fd);
+// #endif
+//     if(fd != -1 && (fcntl(fd, F_SETFD, CLOSE_ON_EXEC) != -1))
+// 	return(fd);
 
-    else
-	{
-	    /* Ensure that if the fcntl fails and fd is valid, then
-	       the file is closed properly. In general this should
-	       not happen. */
-	    if (fd != -1)
-		{
-		    close (fd);
-		}
+//     else
+// 	{
+// 	    /* Ensure that if the fcntl fails and fd is valid, then
+// 	       the file is closed properly. In general this should
+// 	       not happen. */
+// 	    if (fd != -1)
+// 		{
+// 		    close (fd);
+// 		}
 
-	    return(-1);
-	}
-}
+// 	    return(-1);
+// 	}
+// }
 
 FILE *
 myfopen(char *path, char *mode)
@@ -126,52 +126,52 @@ myfopen(char *path, char *mode)
 	}
 }
 
-FILE *
-mypopen(char *cmd, char *mode)
-{
-#ifdef __DJGPP__
-	/* HBB 20010312: Has its own implementation of popen(), which
-	 * is better suited to the platform than cscope's */
-	return (popen)(cmd, mode);
-#else
-	int	p[2];
-	pid_t *poptr;
-	int myside, yourside;
-	pid_t pid;
+// FILE *
+// mypopen(char *cmd, char *mode)
+// {
+// #ifdef __DJGPP__
+// 	/* HBB 20010312: Has its own implementation of popen(), which
+// 	 * is better suited to the platform than cscope's */
+// 	return (popen)(cmd, mode);
+// #else
+// 	int	p[2];
+// 	pid_t *poptr;
+// 	int myside, yourside;
+// 	pid_t pid;
 
-	if(pipe(p) < 0)
-		return(NULL);
-	myside = tst(p[WTR], p[RDR]);
-	yourside = tst(p[RDR], p[WTR]);
-	if((pid = fork()) == 0) {
-		/* myside and yourside reverse roles in child */
-		int	stdio;
+// 	if(pipe(p) < 0)
+// 		return(NULL);
+// 	myside = tst(p[WTR], p[RDR]);
+// 	yourside = tst(p[RDR], p[WTR]);
+// 	if((pid = fork()) == 0) {
+// 		/* myside and yourside reverse roles in child */
+// 		int	stdio;
 
-		/* close all pipes from other popen's */
-		for (poptr = popen_pid; poptr < popen_pid+20; poptr++) {
-			if(*poptr)
-				(void) close(poptr - popen_pid);
-		}
-		stdio = tst(0, 1);
-		close(myside);
-		close(stdio);
-#if V9
-		dup2(yourside, stdio);
-#else
-		fcntl(yourside, F_DUPFD, stdio);
-#endif
-		close(yourside);
-		execlp(shell, mybasename(shell), "-c", cmd, (void *)0);
-		_exit(1);
-	} else if (pid > 0)
-		tstat = signal(SIGTSTP, SIG_DFL);
-	if(pid == -1)
-		return(NULL);
-	popen_pid[myside] = pid;
-	(void) close(yourside);
-	return(fdopen(myside, mode));
-#endif /* DJGPP */
-}
+// 		/* close all pipes from other popen's */
+// 		for (poptr = popen_pid; poptr < popen_pid+20; poptr++) {
+// 			if(*poptr)
+// 				(void) close(poptr - popen_pid);
+// 		}
+// 		stdio = tst(0, 1);
+// 		close(myside);
+// 		close(stdio);
+// #if V9
+// 		dup2(yourside, stdio);
+// #else
+// 		fcntl(yourside, F_DUPFD, stdio);
+// #endif
+// 		close(yourside);
+// 		execlp(shell, mybasename(shell), "-c", cmd, (void *)0);
+// 		_exit(1);
+// 	} else if (pid > 0)
+// 		tstat = signal(SIGTSTP, SIG_DFL);
+// 	if(pid == -1)
+// 		return(NULL);
+// 	popen_pid[myside] = pid;
+// 	(void) close(yourside);
+// 	return(fdopen(myside, mode));
+// #endif /* DJGPP */
+// }
 
 /* HBB 20010705: renamed from 'pclose', which would collide with
  * system-supplied function of same name */

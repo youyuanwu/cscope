@@ -46,6 +46,11 @@
 #include <sys/stat.h>	/* stat */
 #include <assert.h>
 
+#ifdef WIN32
+#else
+#include <unistd.h> // for getcwd
+#endif 
+
 #define	DIRSEPS	" ,:"	/* directory list separators */
 #define	DIRINC	10	/* directory list size increment */
 #define HASHMOD	2003	/* must be a prime number */
@@ -293,8 +298,8 @@ makefilelist(void)
     }
 
     /* see if a file name file exists */
-    if (namefile == NULL && vpaccess(NAMEFILE, READ) == 0) {
-	namefile = NAMEFILE;
+    if (namefile == NULL){ // && vpaccess(NAMEFILE, READ) == 0) {
+		namefile = NAMEFILE;
     }
 
     if (namefile == NULL) {
@@ -616,13 +621,13 @@ incfile(char *file, char *type)
 	    snprintf(path, sizeof(path), "%.*s/%s",
 		    (int)(PATHLEN - 2 - file_len), incdirs[i],
 		    file);
-            if (access(compath(path), READ) == 0) {
-                struct stat st;
-                if( 0 == stat(path,&st) && S_ISREG(st.st_mode) ) {
-                     addsrcfile(path);
-                }
+            // if (access(compath(path), READ) == 0) {
+            //     struct stat st;
+            //     if( 0 == stat(path,&st) && S_ISREG(st.st_mode) ) {
+            //          addsrcfile(path);
+            //     }
 		break;
-	    }
+	    // }
 	}
     }
 }

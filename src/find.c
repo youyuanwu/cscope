@@ -1239,7 +1239,8 @@ dbseek(long offset)
 	if ((n = offset / BUFSIZ) != blocknumber) {
 		if ((rc = fseek(symrefsf, n * BUFSIZ, 0)) == -1) {
 			myperror("Lseek failed");
-			(void) sleep(3);
+
+			// (void) sleep(3);
 			return(rc);
 		}
 		(void) read_block();

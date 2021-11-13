@@ -357,7 +357,7 @@ cscope: converting to new symbol database file format\n");
     }
     putheader(newdir);
     fileversion = FILEVERSION;
-    if (buildonly == YES && verbosemode != YES && !isatty(0)) {
+    if (buildonly == YES && verbosemode != YES) { // Disable atty for now // && !isatty(0)) {
 	interactive = NO;
     } else {
 	searchcount = 0;
@@ -447,32 +447,34 @@ cscope: converting to new symbol database file format\n");
 	/* NOTREACHED */
     }
 
+	// disable inverted index for now
+	cannotindex();
     /* create the inverted index if requested */
-    if (invertedindex == YES) {
-	char	sortcommand[PATHLEN + 1];
+    // if (invertedindex == YES) {
+	// char	sortcommand[PATHLEN + 1];
 
-	if (fflush(postings) == EOF) {
-	    cannotwrite(temp1);
-	    /* NOTREACHED */
-	}
-	fstat(fileno(postings), &statstruct);
-	fclose(postings);
-	snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s", tmpdir, temp1);
-	if ((postings = mypopen(sortcommand, "r")) == NULL) {
-	    fprintf(stderr, "cscope: cannot open pipe to sort command\n");
-	    cannotindex();
-	} else {
-	    if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
-		movefile(newinvname, invname);
-		movefile(newinvpost, invpost);
-	    } else {
-		cannotindex();
-	    }
-	    mypclose(postings);
-	}
-	remove(temp1);
-	free(srcoffset);
-    }
+	// if (fflush(postings) == EOF) {
+	//     cannotwrite(temp1);
+	//     /* NOTREACHED */
+	// }
+	// fstat(fileno(postings), &statstruct);
+	// fclose(postings);
+	// snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s", tmpdir, temp1);
+	// if ((postings = mypopen(sortcommand, "r")) == NULL) {
+	//     fprintf(stderr, "cscope: cannot open pipe to sort command\n");
+	//     cannotindex();
+	// } else {
+	//     if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
+	// 	movefile(newinvname, invname);
+	// 	movefile(newinvpost, invpost);
+	//     } else {
+	// 	cannotindex();
+	//     }
+	//     mypclose(postings);
+	// }
+	// remove(temp1);
+	// free(srcoffset);
+    // }
     /* rewrite the header with the trailer offset and final option list */
     rewind(newrefs);
     putheader(newdir);

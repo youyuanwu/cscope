@@ -412,7 +412,7 @@ int	egrep(char *file, FILE *output, char *format);
 int	mygetline(char p[], char s[], unsigned size, int firstchar, BOOL iscaseless);
 int	mygetch(void);
 int	hash(char *ss);
-int	execute(char *a, ...);
+// int	execute(char *a, ...);
 long	dbseek(long offset);
 
 
