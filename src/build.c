@@ -106,8 +106,8 @@ cscope: cannot create inverted index; ignoring -q option\n");
     fprintf(stderr, "\
 cscope: removed files %s and %s\n", 
 	    newinvname, newinvpost);
-    unlink(newinvname);
-    unlink(newinvpost);
+    remove(newinvname);
+    remove(newinvpost);
 }
 
 
@@ -280,8 +280,8 @@ cscope: -q option mismatch between command line and old symbol database\n");
 		if (invertedindex == NO) {
 		    posterr("cscope: removed files %s and %s\n",
 			    invname, invpost);
-		    unlink(invname);
-		    unlink(invpost);
+		    remove(invname);
+		    remove(invpost);
 		}
 		goto outofdate;
 	    }
@@ -470,7 +470,7 @@ cscope: converting to new symbol database file format\n");
 	    }
 	    mypclose(postings);
 	}
-	unlink(temp1);
+	remove(temp1);
 	free(srcoffset);
     }
     /* rewrite the header with the trailer offset and final option list */
@@ -719,7 +719,7 @@ copyinverted(void)
 static void
 movefile(char *new, char *old)
 {
-    unlink(old);
+    remove(old);
     if (rename(new, old) == -1) {
 	myperror("cscope");
 	postfatal("cscope: cannot rename file %s to file %s\n",

@@ -916,7 +916,7 @@ cannotwrite(char *file)
 
     myperror(msg);	/* display the reason */
 
-    unlink(file);
+    remove(file);
     myexit(1);	/* calls exit(2), which closes files */
 }
 
@@ -1063,9 +1063,9 @@ myexit(int sig)
 	
 	/* remove any temporary files */
 	if (temp1[0] != '\0') {
-		unlink(temp1);
-		unlink(temp2);
-		rmdir(tempdirpv);		
+		remove(temp1);
+		remove(temp2);
+		remove(tempdirpv);	
 	}
 	/* restore the terminal to its original mode */
 	if (incurses == YES) {
@@ -1083,9 +1083,9 @@ myexit(int sig)
 	free_newbuildfiles();
 
 	if( remove_symfile_onexit == YES ) {
-		unlink( reffile );
-		unlink( invname );
-		unlink( invpost );
+		remove( reffile );
+		remove( invname );
+		remove( invpost );
 	}
 
 	exit(sig);

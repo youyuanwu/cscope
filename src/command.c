@@ -536,11 +536,11 @@ cscope: cannot open pipe to shell command: %s\n", newpat);
 			return(changestring());
 		    }
 
-		} else if (field == FILENAME && 
-			   access(newpat, READ) == 0) {
-		    /* try to edit the file anyway */
-		    edit(newpat, "1");
-		}
+		} else if (field == FILENAME) { 
+			//   access(newpat, READ) == 0) {
+				/* try to edit the file anyway */
+				edit(newpat, "1");
+			}
 	    } else {	/* no pattern--the input was erased */
 		return(NO);
 	    }
@@ -740,12 +740,12 @@ changestring(void)
 	    if (strcmp(newfile, oldfile) != 0) {
 				
 		/* make sure it can be changed */
-		if (access(newfile, WRITE) != 0) {
-		    snprintf(msg, sizeof(msg), "Cannot write to file %s", newfile);
-		    postmsg(msg);
-		    anymarked = NO;
-		    break;
-		}
+		// if (access(newfile, WRITE) != 0) {
+		//     snprintf(msg, sizeof(msg), "Cannot write to file %s", newfile);
+		//     postmsg(msg);
+		//     anymarked = NO;
+		//     break;
+		// }
 		/* if there was an old file */
 		if (*oldfile != '\0') {
 		    fprintf(script, "w\n");	/* save it */

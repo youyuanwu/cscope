@@ -503,8 +503,8 @@ scan_dir(const char *adir, BOOL recurse_dir)
                                             && S_ISDIR(buf.st_mode) ) {
 						scan_dir(path, recurse_dir);
 					} else if (issrcfile(path)
-						   && infilelist(path) == NO
-						   && access(path, R_OK) == 0) {
+						   && infilelist(path) == NO) {
+						//   && access(path, R_OK) == 0) {
 						addsrcfile(path);
 					}
 				}
