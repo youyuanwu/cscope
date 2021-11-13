@@ -37,19 +37,40 @@ FLEX_TARGET(fscanner ${cscope_SOURCE_DIR}/src/fscanner.l ${cscope_SOURCE_DIR}/ge
 
 # assume stdc lib is present
 
-# configure file
-find_package(Curses)
-if(CURSES_FOUND)
-    if(CURSES_HAVE_CURSES_H)
-        set(HAS_CURSES 1)
+# configure curses lib
+if(WIN32)
+    message("fetching pdcurses")
+    include(FetchContent)
+    FetchContent_Declare(pdcurses
+    GIT_REPOSITORY https://github.com/youyuanwu/PDCursesMod.git
+    GIT_TAG bcd6edda2bb7eecddc27d4ccc690da7232ab9e5b
+    )
+    # FetchContent_MakeAvailable(pdcurses)
+    FetchContent_GetProperties(pdcurses)
+    if(NOT pdcurses_POPULATED)
+    FetchContent_Populate(pdcurses)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${pdcurses_SOURCE_DIR}/cmake")
+    # choose SDL2 backend
+    set(PDC_SDL2_BUILD off CACHE BOOL "" FORCE)
+    set(PDC_BUILD_SHARED off CACHE BOOL "" FORCE)
+    add_subdirectory(${pdcurses_SOURCE_DIR} ${pdcurses_BINARY_DIR} EXCLUDE_FROM_ALL)
     endif()
-    if(CURSES_HAVE_NCURSES_H)
-        message("Found ncurses")
-        set(USE_NCURSES 1)
-    endif()
+
+    set(HAS_CURSES 1)
 else()
-    message(FATAL_ERROR "cursers lib not found.")
-endif()
+    find_package(Curses)
+    if(CURSES_FOUND)
+        if(CURSES_HAVE_CURSES_H)
+            set(HAS_CURSES 1)
+        endif()
+        if(CURSES_HAVE_NCURSES_H)
+            message("Found ncurses")
+            set(USE_NCURSES 1)
+        endif()
+    else()
+        message(FATAL_ERROR "cursers lib not found.")
+    endif()
+endif(WIN32)
 
 include(CheckFunctionExists)
 check_function_exists(asprintf HAVE_ASPRINTF)
@@ -58,12 +79,29 @@ check_function_exists(lstat HAVE_LSTAT)
 include(CheckSymbolExists)
 check_symbol_exists(sigsetjmp "setjmp.h" HAVE_SIGSETJMP)
 
-include(CheckIncludeFile)
-check_include_file(dirent.h HAVE_DIRENT_H)
-if(NOT ${HAVE_DIRENT_H})
-    message(FATAL_ERROR "dirent.h not found.")
-endif()
+# configure dirent lib
+if(WIN32)
+    message("fetching dirent for win")
+    include(FetchContent)
+    FetchContent_Declare(dirent
+    GIT_REPOSITORY https://github.com/tronkko/dirent.git
+    GIT_TAG 1.23.2
+    )
+    # FetchContent_MakeAvailable(pdcurses)
+    FetchContent_GetProperties(dirent)
+    if(NOT dirent_POPULATED)
+    FetchContent_Populate(dirent)
+    add_subdirectory(${dirent_SOURCE_DIR} ${dirent_BINARY_DIR} EXCLUDE_FROM_ALL)
+    endif()
+else()
+    include(CheckIncludeFile)
+    check_include_file(dirent.h HAVE_DIRENT_H)
+    if(NOT HAVE_DIRENT_H)
+        message(FATAL_ERROR "dirent.h not found.")
+    endif()
+endif(WIN32)
 
+include(CheckIncludeFile)
 check_include_file(fcntl.h HAVE_FCNTL_H)
 check_include_file(getopt.h HAVE_GETOPT_LONG)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
