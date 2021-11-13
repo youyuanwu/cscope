@@ -2,6 +2,22 @@ project(cscope)
 
 cmake_minimum_required(VERSION 3.16)
 
+if(WIN32)
+  message("fetching winflexbison programs")
+  include(FetchContent)
+  FetchContent_Declare(
+    winflexbison
+    URL      https://github.com/lexxmark/winflexbison/releases/download/v2.5.24/win_flex_bison-2.5.24.zip
+    URL_HASH SHA256=39C6086CE211D5415500ACC5ED2D8939861CA1696AEE48909C7F6DAF5122B505
+  )
+  # calculate hash in powershell:  Get-FileHash -Algorithm SHA256 <file name>
+  if(NOT winflexbison_POPULATED)
+    FetchContent_Populate(winflexbison)
+  endif()
+  # add exe to path so that cmake can search
+  LIST(APPEND CMAKE_PROGRAM_PATH "${winflexbison_SOURCE_DIR}")
+endif()
+
 # bison targets
 find_package(BISON)
 if(NOT BISON_FOUND)
