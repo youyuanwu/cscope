@@ -1,7 +1,8 @@
 Makefile
 .deps
 cscope.out
-egrep.c fscanner.c
+egrep.c
+fscanner.c
 gscope.c
 .cvsignore
 *~
