@@ -42,20 +42,53 @@ if(WIN32)
     message("fetching pdcurses")
     include(FetchContent)
     FetchContent_Declare(pdcurses
-    GIT_REPOSITORY https://github.com/youyuanwu/PDCursesMod.git
-    GIT_TAG bcd6edda2bb7eecddc27d4ccc690da7232ab9e5b
+        GIT_REPOSITORY https://github.com/youyuanwu/PDCursesMod.git
+        GIT_TAG da6732244814d94cb0ffb3150f849b8ce4354b28
     )
-    # FetchContent_MakeAvailable(pdcurses)
-    FetchContent_GetProperties(pdcurses)
-    if(NOT pdcurses_POPULATED)
-    FetchContent_Populate(pdcurses)
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${pdcurses_SOURCE_DIR}/cmake")
-    # choose SDL2 backend
     set(PDC_SDL2_BUILD off CACHE BOOL "" FORCE)
     set(PDC_BUILD_SHARED off CACHE BOOL "" FORCE)
-    add_subdirectory(${pdcurses_SOURCE_DIR} ${pdcurses_BINARY_DIR} EXCLUDE_FROM_ALL)
-    endif()
+    set(PDC_SDL2_DEPS_BUILD off CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(pdcurses)
+    # set(pdcurses_LIBRARY_DIR ${pdcurses_LIBRARY_DIR}/wincon/${CMAKE_BUILD_TYPE})
+    # message("debug: pdcurses_LIBRARY_DIR ${pdcurses_LIBRARY_DIR}")
+    # find_library(pdcursesstatic pdcurses REQUIRED
+    #     PATHS ${pdcurses_BUILD_DIR}/wincon/${CMAKE_BUILD_TYPE}
+    # )
+    # FetchContent_GetProperties(pdcurses)
+    # if(NOT pdcurses_POPULATED)
+    #     FetchContent_Populate(pdcurses)
+    #     # set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${pdcurses_SOURCE_DIR}/cmake")
+    #     set(PDC_SDL2_BUILD off CACHE BOOL "" FORCE)
+    #     set(PDC_BUILD_SHARED off CACHE BOOL "" FORCE)
+    #     set(PDC_SDL2_DEPS_BUILD off CACHE BOOL "" FORCE)
+    #     #cmake . -B build -DPDC_SDL2_BUILD=off -DPDC_BUILD_SHARED=off -DPDC_SDL2_DEPS_BUILD=off
+    #     add_subdirectory(${pdcurses_SOURCE_DIR} ${pdcurses_BINARY_DIR} EXCLUDE_FROM_ALL)
+    # endif()
+
+    # include(ExternalProject)
+    # ExternalProject_Add(pdcurses
+    #     GIT_REPOSITORY https://github.com/youyuanwu/PDCursesMod.git
+    #     GIT_TAG master
+    #     UPDATE_COMMAND ""
+    #     # DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/_deps/pdcurses-src
+    #     SOURCE_DIR ${CMAKE_BINARY_DIR}/_deps/pdcurses-src
+    #     BINARY_DIR ${CMAKE_BINARY_DIR}/_deps/pdcurses-build
+    #     BUILD_IN_SOURCE 0
+    #     CMAKE_ARGS
+    #         #-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+    #         #-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/${CMAKE_BUILD_TYPE}
+    #         # -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    #         -DPDC_SDL2_BUILD=off
+    #         -DPDC_BUILD_SHARED=off
+    #         -PDC_SDL2_DEPS_BUILD=off
+    # )
+    # SET(pdcurses_wincon_INCLUDE_DIR ${pdcurses_SOURCE_DIR})
+    # SET(pdcurses_wincon_LIBRARY_DIR ${pdcurses_LIBRARY_DIR}/${CMAKE_BUILD_TYPE})
+    # add_library(pdcurses_wincon STATIC IMPORTED)
+
+
     # list(APPEND LIBS vt_pdcursesstatic)
+    # find_library(pdcurses REQUIRED)
     set(HAS_CURSES 1)
 else()
     find_package(Curses)
@@ -142,8 +175,12 @@ if(WIN32)
         PRIVATE ${tre_SOURCE_DIR}/lib
     )
     target_include_directories(cscope PRIVATE ${pdcurses_SOURCE_DIR})
-    message(" debug: ${pdcurses_INCLUDES_DIR}")
-    target_link_libraries(cscope PRIVATE pdcurses tre)
+    message(" debug: ${pdcurses_BINARY_DIR}/wincon/${CMAKE_BUILD_TYPE}")
+    # hack
+    # target_link_directories(cscope
+    #     PRIVATE ${pdcurses_BINARY_DIR}/wincon/${CMAKE_BUILD_TYPE}
+    # )
+    target_link_libraries(cscope PRIVATE wincon_pdcursesstatic tre)
 endif()
 
 target_link_libraries(cscope
