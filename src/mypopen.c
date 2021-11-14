@@ -34,7 +34,7 @@
 #include <signal.h>
 // #include <unistd.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+// #include <sys/wait.h>
 #include "global.h"	/* pid_t, shell, and mybasename() */
 
 #define	tst(a,b) (*mode == 'r'? (b) : (a))
@@ -175,34 +175,34 @@ myfopen(char *path, char *mode)
 
 /* HBB 20010705: renamed from 'pclose', which would collide with
  * system-supplied function of same name */
-int
-mypclose(FILE *ptr)
-{
-#ifdef __DJGPP__ 
-	/* HBB 20010705: This system has its own pclose(), which we
-	 * don't want to replace */
-	return (pclose)(ptr);
-#else
-	int f;
-	pid_t r;
-	int status = -1;
-	sighandler_t hstat, istat, qstat;
+// int
+// mypclose(FILE *ptr)
+// {
+// #ifdef __DJGPP__ 
+// 	/* HBB 20010705: This system has its own pclose(), which we
+// 	 * don't want to replace */
+// 	return (pclose)(ptr);
+// #else
+// 	int f;
+// 	pid_t r;
+// 	int status = -1;
+// 	sighandler_t hstat, istat, qstat;
 
-	f = fileno(ptr);
-	(void) fclose(ptr);
-	istat = signal(SIGINT, SIG_IGN);
-	qstat = signal(SIGQUIT, SIG_IGN);
-	hstat = signal(SIGHUP, SIG_IGN);
-	while((r = wait(&status)) != popen_pid[f] && r != -1)
-		; /* nothing */
-	if(r == -1)
-		status = -1;
-	(void) signal(SIGINT, istat);
-	(void) signal(SIGQUIT, qstat);
-	(void) signal(SIGHUP, hstat);
-	(void) signal(SIGTSTP, tstat);
-	/* mark this pipe closed */
-	popen_pid[f] = 0;
-	return(status);
-#endif /* DJGPP */
-}
+// 	f = fileno(ptr);
+// 	(void) fclose(ptr);
+// 	istat = signal(SIGINT, SIG_IGN);
+// 	qstat = signal(SIGQUIT, SIG_IGN);
+// 	hstat = signal(SIGHUP, SIG_IGN);
+// 	while((r = wait(&status)) != popen_pid[f] && r != -1)
+// 		; /* nothing */
+// 	if(r == -1)
+// 		status = -1;
+// 	(void) signal(SIGINT, istat);
+// 	(void) signal(SIGQUIT, qstat);
+// 	(void) signal(SIGHUP, hstat);
+// 	(void) signal(SIGTSTP, tstat);
+// 	/* mark this pipe closed */
+// 	popen_pid[f] = 0;
+// 	return(status);
+// #endif /* DJGPP */
+// }

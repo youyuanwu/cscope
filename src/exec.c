@@ -38,7 +38,7 @@
 // #include <unistd.h>
 #include "global.h"
 #include <stdarg.h>
-#include <sys/wait.h>
+// #include <sys/wait.h>
 #include <sys/types.h>      /* pid_t */
 #ifdef __DJGPP__
 #include <process.h>
@@ -163,26 +163,26 @@ static	int	join(pid_t p);
 
 /* join is the compliment of fork */
 
-static int
-join(pid_t p) 
-{
-	int	status = -1;  
-	pid_t	w;
+// static int
+// join(pid_t p) 
+// {
+// 	int	status = -1;  
+// 	pid_t	w;
 
-	/* wait for the correct child to exit */
-	do {
-		w = wait(&status);
-	} while (p != -1 && w != p);
+// 	/* wait for the correct child to exit */
+// 	do {
+// 		w = wait(&status);
+// 	} while (p != -1 && w != p);
 
-	/* restore signal handling */
-	signal(SIGQUIT, oldsigquit);
-	signal(SIGHUP, oldsighup);
-#ifdef SIGTSTP
-	signal(SIGTSTP, oldsigtstp);
-#endif	
+// 	/* restore signal handling */
+// 	signal(SIGQUIT, oldsigquit);
+// 	signal(SIGHUP, oldsighup);
+// #ifdef SIGTSTP
+// 	signal(SIGTSTP, oldsigtstp);
+// #endif	
 
-	/* return the child's exit code */
-	return(status >> 8);
-}
+// 	/* return the child's exit code */
+// 	return(status >> 8);
+// }
 
 #endif /* !MSDOS */

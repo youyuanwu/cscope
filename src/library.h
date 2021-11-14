@@ -44,7 +44,7 @@ FILE	*myfopen(char *path, char *mode);
 char	*mygetenv(char *variable, char *deflt);
 // int	myopen(char *path, int flag, int mode);
 // FILE	*mypopen(char *cmd, char *mode);
-int	mypclose(FILE *ptr);
+// int	mypclose(FILE *ptr);
 FILE	*vpfopen(char *filename, char *type);
 void	egrepcaseless(int i);
 
