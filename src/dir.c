@@ -47,6 +47,7 @@
 #include <assert.h>
 
 #ifdef WIN32
+#include <Windows.h> // for getcwd
 #else
 #include <unistd.h> // for getcwd
 #endif 

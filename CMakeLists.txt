@@ -55,7 +55,7 @@ if(WIN32)
     set(PDC_BUILD_SHARED off CACHE BOOL "" FORCE)
     add_subdirectory(${pdcurses_SOURCE_DIR} ${pdcurses_BINARY_DIR} EXCLUDE_FROM_ALL)
     endif()
-
+    # list(APPEND LIBS vt_pdcursesstatic)
     set(HAS_CURSES 1)
 else()
     find_package(Curses)
@@ -124,8 +124,18 @@ target_include_directories(cscope
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/gen
 )
 
+if(WIN32)
+    target_include_directories(cscope
+        PRIVATE ${dirent_SOURCE_DIR}/include
+    )
+    target_include_directories(cscope PRIVATE ${pdcurses_SOURCE_DIR})
+    message(" debug: ${pdcurses_INCLUDES_DIR}")
+    target_link_libraries(cscope PRIVATE pdcurses)
+endif()
+
 target_link_libraries(cscope
     PRIVATE ${CURSES_LIBRARIES}
+#    PUBLIC dirent
 )
 
 target_compile_definitions(cscope
