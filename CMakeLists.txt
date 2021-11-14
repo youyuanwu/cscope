@@ -180,7 +180,11 @@ if(WIN32)
     # target_link_directories(cscope
     #     PRIVATE ${pdcurses_BINARY_DIR}/wincon/${CMAKE_BUILD_TYPE}
     # )
-    target_link_libraries(cscope PRIVATE wincon_pdcursesstatic tre)
+    target_link_libraries(cscope PRIVATE 
+        wincon_pdcursesstatic 
+        tre
+        winmm # some sound functions from win api
+    )
 endif()
 
 target_link_libraries(cscope

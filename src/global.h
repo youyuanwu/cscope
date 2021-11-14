@@ -46,6 +46,14 @@
 #include <stdio.h>	/* standard I/O package */
 #include <stdlib.h>     /* standard library functions */
 
+// hack
+#ifdef WIN32
+#include <sys/stat.h>
+#if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#endif
+#endif
+
 /* A special "magic" header file required by HP/Compaq NSK (Non-Stop
  * Kernel) to present a more Unix-ish environment ... */
 #ifdef HAVE_FLOSS_H
@@ -92,11 +100,11 @@ int rpl_vsnprintf(char *, size_t, const char *, va_list);
 int rpl_snprintf(char *, size_t, const char *, ...);
 #endif
 #if !HAVE_VASPRINTF
-int rpl_vasprintf(char **, const char *, va_list);
+// int rpl_vasprintf(char **, const char *, va_list);
 #endif
-#if !HAVE_ASPRINTF
-int rpl_asprintf(char **, const char *, ...);
-#endif
+// #if !HAVE_ASPRINTF
+// int rpl_asprintf(char **, const char *, ...);
+// #endif
 #endif	/* HAVE_STDARG_H */
 
 /* FIXME: this testing for platforms is foolish. Stop it! */
