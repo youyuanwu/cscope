@@ -101,6 +101,17 @@ else()
     endif()
 endif(WIN32)
 
+# configure regex lib
+if(WIN32)
+    message("fetching tre for regex")
+    include(FetchContent)
+    FetchContent_Declare(tre
+        GIT_REPOSITORY    https://github.com/youyuanwu/tre.git
+        GIT_TAG           ca197f0999f647fa273370e984e4f95a6c9cdd60
+    )
+    FetchContent_MakeAvailable(tre)
+endif(WIN32)
+
 include(CheckIncludeFile)
 check_include_file(fcntl.h HAVE_FCNTL_H)
 check_include_file(getopt.h HAVE_GETOPT_LONG)
@@ -127,15 +138,16 @@ target_include_directories(cscope
 if(WIN32)
     target_include_directories(cscope
         PRIVATE ${dirent_SOURCE_DIR}/include
+        PRIVATE ${tre_SOURCE_DIR}/include
+        PRIVATE ${tre_SOURCE_DIR}/lib
     )
     target_include_directories(cscope PRIVATE ${pdcurses_SOURCE_DIR})
     message(" debug: ${pdcurses_INCLUDES_DIR}")
-    target_link_libraries(cscope PRIVATE pdcurses)
+    target_link_libraries(cscope PRIVATE pdcurses tre)
 endif()
 
 target_link_libraries(cscope
     PRIVATE ${CURSES_LIBRARIES}
-#    PUBLIC dirent
 )
 
 target_compile_definitions(cscope
