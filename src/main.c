@@ -67,6 +67,14 @@
 #define DFLT_INCDIR "/usr/include"
 #endif
 
+// hacks to make win compile
+#undef KEY_RESIZE
+
+#ifdef WIN32
+typedef int pid_t;
+typedef int mode_t;
+#endif
+
 /* note: these digraph character frequencies were calculated from possible 
    printable digraphs in the cross-reference for the C compiler */
 char	dichar1[] = " teisaprnl(of)=c";	/* 16 most frequent first chars */
@@ -509,18 +517,22 @@ cscope: TMPDIR to a valid directory\n");
     }
 
     /* create the temporary file names */
-    orig_umask = umask(S_IRWXG|S_IRWXO);
+    // orig_umask = umask(S_IRWXG|S_IRWXO);
 
 	// hardcode pid for now
-	pid = 12345;
+	pid = getpid();
     snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
-    if(mkdir(tempdirpv,S_IRWXU)) {
+#ifdef WIN32
+	if(mkdir(tempdirpv)) {
+#else
+	if(mkdir(tempdirpv,S_IRWXU)) {
+#endif
 	fprintf(stderr, "\
 cscope: Could not create private temp dir %s\n",
 		tempdirpv);
 	myexit(1);
     }
-    umask(orig_umask);
+    // umask(orig_umask);
 
     snprintf(temp1, sizeof(temp1), "%s/cscope.1", tempdirpv);
     snprintf(temp2, sizeof(temp2), "%s/cscope.2", tempdirpv);
@@ -529,11 +541,14 @@ cscope: Could not create private temp dir %s\n",
     if (signal(SIGINT, SIG_IGN) != SIG_IGN) {
 	/* cleanup on the interrupt and quit signals */
 	signal(SIGINT, myexit);
+#ifdef SIGQUIT
 	signal(SIGQUIT, myexit);
+#endif
     }
     /* cleanup on the hangup signal */
+#ifdef SIGHUP
     signal(SIGHUP, myexit);
-
+#endif
     /* ditto the TERM signal */
     signal(SIGTERM, myexit);
 
@@ -541,7 +556,9 @@ cscope: Could not create private temp dir %s\n",
      * linemode, while in curses mode the "|" command can cause a pipe signal
      * too
      */
+#ifdef SIGPIPE
     signal(SIGPIPE, SIG_IGN);
+#endif
 
     /* if the database path is relative and it can't be created */
     // if (reffile[0] != '/' && access(".", WRITE) != 0) {
@@ -1074,9 +1091,11 @@ myexit(int sig)
 		exitcurses();
 	}
 	/* dump core for debugging on the quit signal */
+#ifdef SIGQUIT
 	if (sig == SIGQUIT) {
 		abort();
 	}
+#endif
 	/* HBB 20000421: be nice: free allocated data */
 	freefilelist();
 	freeinclist();

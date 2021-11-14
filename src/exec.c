@@ -54,7 +54,7 @@ static	sighandler_t oldsighup; /* old value of hangup signal */
 static	sighandler_t oldsigtstp; /* old value of SIGTSTP */
 
 #ifndef __MSDOS__ /* none of these is needed, there */
-static	int	join(pid_t p);
+// static	int	join(pid_t p);
 // static	int	myexecvp(char *a, char **args);
 // static	pid_t	myfork(void);
 #endif

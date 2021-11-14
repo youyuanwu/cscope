@@ -52,8 +52,8 @@
 # include <io.h>		/* for setmode() */
 #endif
 
-static pid_t popen_pid[20];
-static void (*tstat)(int);
+//static pid_t popen_pid[20];
+// static void (*tstat)(int);
 
 // int
 // myopen(char *path, int flag, int mode)
@@ -113,6 +113,9 @@ myfopen(char *path, char *mode)
 #ifdef __DJGPP__ /* FIXME: test feature, not platform */
     /* HBB 20010312: DOS GCC doesn't have FD_CLOEXEC (yet), so it 
      * always fails this call. Have to skip that step */
+    if(fp)
+#elif defined WIN32
+    // TODO: fix this for windows
     if(fp)
 #else
 	if(fp && (fcntl(fileno(fp), F_SETFD, CLOSE_ON_EXEC) != -1))
