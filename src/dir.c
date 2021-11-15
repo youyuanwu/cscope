@@ -299,9 +299,9 @@ makefilelist(void)
     }
 
     /* see if a file name file exists */
-    if (namefile == NULL){ // && vpaccess(NAMEFILE, READ) == 0) {
+	if (namefile == NULL && vpaccess(NAMEFILE, READ) == 0) {
 		namefile = NAMEFILE;
-    }
+	}
 
     if (namefile == NULL) {
 	/* No namefile --> make a list of all the source files

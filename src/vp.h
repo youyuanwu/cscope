@@ -65,6 +65,6 @@ extern	int	vpndirs;	/* number of directories in view path */
 
 void	vpinit(char *current_dir);
 int	vpopen(char *path, int oflag);
-// int	vpaccess(char *path, mode_t amode);
+int	vpaccess(char *path, mode_t amode);
 
 #endif /* CSCOPE_VP_H */

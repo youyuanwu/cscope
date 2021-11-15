@@ -36,22 +36,29 @@
 // #include <unistd.h>
 #include "vp.h"
 #include <sys/types.h>
- 
-// int
-// vpaccess(char *path, mode_t amode)
-// {
-// 	char	buf[MAXPATH + 1];
-// 	int	returncode;
-// 	int	i;
 
-// 	if ((returncode = access(path, amode)) == -1 && path[0] != '/') {
-// 		vpinit(NULL);
-// 		for (i = 1; i < vpndirs; i++) {
-// 			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], path);
-// 			if ((returncode = access(buf, amode)) != -1) {
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	return(returncode);
-// }
+// check if file exists
+int stataccess(char* filename)
+{
+    struct stat   buffer;   
+    return (stat (filename, &buffer) == 0);
+}
+
+int
+vpaccess(char *path, mode_t amode)
+{
+	char	buf[MAXPATH + 1];
+	int	returncode;
+	int	i;
+
+	if ((returncode = stataccess(path)) == -1 && path[0] != '/') {
+		vpinit(NULL);
+		for (i = 1; i < vpndirs; i++) {
+			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], path);
+			if ((returncode = stataccess(buf)) != -1) {
+				break;
+			}
+		}
+	}
+	return(returncode);
+}
