@@ -51,7 +51,8 @@
 #include <tre.h>
 #else
 // use unix system one
-#include <regex.h>
+//#include <regex.h>
+#include <tre.h>
 #endif
 
 /* most of these functions have been optimized so their innermost loops have

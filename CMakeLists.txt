@@ -135,7 +135,7 @@ else()
 endif(WIN32)
 
 # configure regex lib
-if(WIN32)
+#if(WIN32)
     message("fetching tre for regex")
     include(FetchContent)
     FetchContent_Declare(tre
@@ -143,7 +143,7 @@ if(WIN32)
         GIT_TAG           ca197f0999f647fa273370e984e4f95a6c9cdd60
     )
     FetchContent_MakeAvailable(tre)
-endif(WIN32)
+#endif(WIN32)
 
 include(CheckIncludeFile)
 check_include_file(fcntl.h HAVE_FCNTL_H)
@@ -187,8 +187,12 @@ if(WIN32)
     )
 endif()
 
+target_include_directories(cscope
+PRIVATE ${tre_SOURCE_DIR}/include
+)
+
 target_link_libraries(cscope
-    PRIVATE ${CURSES_LIBRARIES}
+    PRIVATE ${CURSES_LIBRARIES} tre
 )
 
 target_compile_definitions(cscope
