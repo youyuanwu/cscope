@@ -123,6 +123,7 @@ myfopen(char *path, char *mode)
 	    return(fp);
 
 	else {
+        fprintf (stderr, "fopen err %d [%s]\n", errno, path);
 	    if (fp)
 		fclose(fp);
 	    return(NULL);

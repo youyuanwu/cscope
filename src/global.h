@@ -52,7 +52,10 @@
 #if !defined(S_ISREG) && defined(S_IFMT) && defined(S_IFREG)
 #define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
 #endif
-#endif
+
+typedef int pid_t;
+typedef int mode_t;
+#endif // WIN32
 
 /* A special "magic" header file required by HP/Compaq NSK (Non-Stop
  * Kernel) to present a more Unix-ish environment ... */

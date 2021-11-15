@@ -51,7 +51,7 @@ vpfopen(char *filename, char *type)
 		) {
 		vpinit(NULL);
 		for (i = 1; i < vpndirs; i++) {
-			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], filename);
+			(void) snprintf(buf, sizeof(buf), "%s\\%s", vpdirs[i], filename);
 			if ((returncode = myfopen(buf, type)) != NULL) {
 				break;
 			}

@@ -71,8 +71,7 @@
 #undef KEY_RESIZE
 
 #ifdef WIN32
-typedef int pid_t;
-typedef int mode_t;
+#include "global.h"
 #endif
 
 /* note: these digraph character frequencies were calculated from possible 
@@ -521,7 +520,7 @@ cscope: TMPDIR to a valid directory\n");
 
 	// hardcode pid for now
 	pid = getpid();
-    snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
+    snprintf(tempdirpv, sizeof(tempdirpv), "%s\\cscope.%d", tmpdir, pid);
 #ifdef WIN32
 	if(mkdir(tempdirpv)) {
 #else
