@@ -46,7 +46,13 @@
 #else
 #include <curses.h>
 #endif
+
+#ifdef WIN32
+#include <tre.h>
+#else
+// use unix system one
 #include <regex.h>
+#endif
 
 /* most of these functions have been optimized so their innermost loops have
  * only one test for the desired character by putting the char and 
@@ -268,7 +274,7 @@ find_symbol_or_assignment(char *pattern, BOOL assign_flag)
 				if (caseless == YES) {
 					s = lcasify(s);
 				}
-				if (*s != '\0' && regexec (&regexp, s, (size_t)0, NULL, 0) == 0) { 
+				if (*s != '\0' && tre_regexec (&regexp, s, (size_t)0, NULL, 0) == 0) { 
 					goto matched;
 				}
 			}
@@ -308,7 +314,7 @@ find_symbol_or_assignment(char *pattern, BOOL assign_flag)
 				}
 				
 				/* match the symbol to the regular expression */
-				if (*s != '\0' && regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
+				if (*s != '\0' && tre_regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
 					goto matched;
 				}
 				goto notmatched;
@@ -612,7 +618,7 @@ findfile(char *dummy)
 	} else {
 	    s = srcfiles[i];
 	}
-	if (regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
+	if (tre_regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
 	    (void) fprintf(refsfound, "%s <unknown> 1 <unknown>\n", 
 			   srcfiles[i]);
 	}
@@ -680,7 +686,7 @@ findinit(char *pattern)
 
 	/* HBB: be nice: free regexp before allocating a new one */
 	if(isregexp_valid == YES)
-		regfree(&regexp);
+		tre_regfree(&regexp);
 
 	isregexp_valid = NO;
 
@@ -700,7 +706,7 @@ findinit(char *pattern)
 
 	/* allow a partial match for a file name */
 	if (field == FILENAME || field == INCLUDES) {
-		if (regcomp (&regexp, pattern, REG_EXTENDED | REG_NOSUB) != 0) { 
+		if (tre_regcomp (&regexp, pattern, REG_EXTENDED | REG_NOSUB) != 0) { 
 			return(REGCMPERROR);
 		} else {
 			isregexp_valid = YES;
@@ -755,7 +761,7 @@ findinit(char *pattern)
 		/* note: regcomp doesn't recognize ^*keypad$ as a syntax error
 		         unless it is given as a single arg */
 		(void) snprintf(buf, sizeof(buf), "^%s$", s);
-		if (regcomp (&regexp, buf, REG_EXTENDED | REG_NOSUB) != 0) {
+		if (tre_regcomp (&regexp, buf, REG_EXTENDED | REG_NOSUB) != 0) {
 			return(REGCMPERROR);
 		}
 		else
@@ -802,10 +808,10 @@ match(void)
 			return(NO);
 		}
 		if (caseless == YES) {
-			return (regexec (&regexp, lcasify(string), (size_t)0, NULL, 0) ? NO : YES);
+			return (tre_regexec (&regexp, lcasify(string), (size_t)0, NULL, 0) ? NO : YES);
 		}
 		else {
-			return (regexec (&regexp, string, (size_t)0, NULL, 0) ? NO : YES);
+			return (tre_regexec (&regexp, string, (size_t)0, NULL, 0) ? NO : YES);
 		}
 	}
 	/* it is a string pattern */
@@ -1145,7 +1151,7 @@ findterm(char *pattern)
 			s = lcasify(s);	/* make it lower case */
 		}
 		/* if it matches */
-		if (regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
+		if (tre_regexec (&regexp, s, (size_t)0, NULL, 0) == 0) {
 	
 			/* add its postings to the set */
 			if ((postingp = boolfile(&invcontrol, &npostings, BOOL_OR)) == NULL) {
