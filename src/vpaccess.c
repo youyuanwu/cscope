@@ -41,7 +41,7 @@
 int stataccess(char* filename)
 {
     struct stat   buffer;   
-    return (stat (filename, &buffer) == 0);
+    return stat (filename, &buffer);
 }
 
 int
