@@ -520,10 +520,11 @@ cscope: TMPDIR to a valid directory\n");
 
 	// hardcode pid for now
 	pid = getpid();
-    snprintf(tempdirpv, sizeof(tempdirpv), "%s\\cscope.%d", tmpdir, pid);
 #ifdef WIN32
+    snprintf(tempdirpv, sizeof(tempdirpv), "%s\\cscope.%d", tmpdir, pid);
 	if(mkdir(tempdirpv)) {
 #else
+    snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
 	if(mkdir(tempdirpv,S_IRWXU)) {
 #endif
 	fprintf(stderr, "\

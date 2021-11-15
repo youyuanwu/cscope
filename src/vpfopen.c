@@ -51,7 +51,12 @@ vpfopen(char *filename, char *type)
 		) {
 		vpinit(NULL);
 		for (i = 1; i < vpndirs; i++) {
+
+#ifdef WIN32
 			(void) snprintf(buf, sizeof(buf), "%s\\%s", vpdirs[i], filename);
+#else
+	(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], filename);
+#endif
 			if ((returncode = myfopen(buf, type)) != NULL) {
 				break;
 			}
