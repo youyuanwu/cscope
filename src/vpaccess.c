@@ -33,10 +33,17 @@
 /* vpaccess - view path version of the access system call */
 
 #include <stdio.h>
-#include <unistd.h>
+// #include <unistd.h>
 #include "vp.h"
 #include <sys/types.h>
- 
+
+// check if file exists
+int stataccess(char* filename)
+{
+    struct stat   buffer;   
+    return stat (filename, &buffer);
+}
+
 int
 vpaccess(char *path, mode_t amode)
 {
@@ -44,7 +51,7 @@ vpaccess(char *path, mode_t amode)
 	int	returncode;
 	int	i;
 
-	if ((returncode = access(path, amode)) == -1 && path[0] != '/'
+	if ((returncode = stataccess(path)) == -1 && path[0] != '/'
 #ifdef WIN32
 		&& path[0] != '\\' && path[1] != ':'
 #endif
@@ -52,7 +59,7 @@ vpaccess(char *path, mode_t amode)
 		vpinit(NULL);
 		for (i = 1; i < vpndirs; i++) {
 			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], path);
-			if ((returncode = access(buf, amode)) != -1) {
+			if ((returncode = stataccess(buf)) != -1) {
 				break;
 			}
 		}

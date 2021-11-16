@@ -368,17 +368,19 @@ command(int commandc)
 	    remove(temp2);
 	}
 	exitcurses();
-	if ((file = mypopen(newpat, "w")) == NULL) {
-	    fprintf(stderr, "\
-cscope: cannot open pipe to shell command: %s\n", newpat);
-	} else {
-	    seekline(1);
-	    while ((c = getc(refsfound)) != EOF) {
-		putc(c, file);
-	    }
-	    seekline(topline);
-	    mypclose(file);
-	}
+	fprintf(stderr, "\
+cscope: all shell commands are disabled: %s\n", newpat);
+// 	if ((file = mypopen(newpat, "w")) == NULL) {
+// 	    fprintf(stderr, "\
+// cscope: cannot open pipe to shell command: %s\n", newpat);
+// 	} else {
+// 	    seekline(1);
+// 	    while ((c = getc(refsfound)) != EOF) {
+// 		putc(c, file);
+// 	    }
+// 	    seekline(topline);
+// 	    mypclose(file);
+// 	}
 	if (commandc == '^') {
 	    if (readrefs(temp2) == NO) {
 		postmsg("Ignoring empty output of ^ command");
@@ -418,7 +420,7 @@ cscope: cannot open pipe to shell command: %s\n", newpat);
 	return(NO);
 
     case '!':	/* shell escape */
-	execute(shell, shell, NULL);
+	//execute(shell, shell, NULL);
 	seekline(topline);
 	break;
 
@@ -537,11 +539,11 @@ cscope: cannot open pipe to shell command: %s\n", newpat);
 			return(changestring());
 		    }
 
-		} else if (field == FILENAME && 
-			   access(newpat, READ) == 0) {
-		    /* try to edit the file anyway */
-		    edit(newpat, "1");
-		}
+		} else if (field == FILENAME) { 
+			//   access(newpat, READ) == 0) {
+				/* try to edit the file anyway */
+				edit(newpat, "1");
+			}
 	    } else {	/* no pattern--the input was erased */
 		return(NO);
 	    }
@@ -741,12 +743,12 @@ changestring(void)
 	    if (strcmp(newfile, oldfile) != 0) {
 				
 		/* make sure it can be changed */
-		if (access(newfile, WRITE) != 0) {
-		    snprintf(msg, sizeof(msg), "Cannot write to file %s", newfile);
-		    postmsg(msg);
-		    anymarked = NO;
-		    break;
-		}
+		// if (access(newfile, WRITE) != 0) {
+		//     snprintf(msg, sizeof(msg), "Cannot write to file %s", newfile);
+		//     postmsg(msg);
+		//     anymarked = NO;
+		//     break;
+		// }
 		/* if there was an old file */
 		if (*oldfile != '\0') {
 		    fprintf(script, "w\n");	/* save it */
@@ -796,7 +798,7 @@ changestring(void)
 	clearprompt();
 	refresh();
 	fprintf(stderr, "Changed lines:\n\r");
-	execute("sh", "sh", temp2, NULL);
+	// execute("sh", "sh", temp2, NULL);
 	askforreturn();
 	seekline(1);
     } else {

@@ -1482,20 +1482,20 @@ mymemcpy(void *dst, void *src, size_t len)
 }
 #endif	/* NEED_MYMEMCPY */
 
-int
-rpl_vasprintf(char **ret, const char *format, va_list ap)
-{
-	size_t size;
-	int len;
-	va_list aq;
+// int
+// rpl_vasprintf(char **ret, const char *format, va_list ap)
+// {
+// 	size_t size;
+// 	int len;
+// 	va_list aq;
 
-	VA_COPY(aq, ap);
-	len = vsnprintf(NULL, 0, format, aq);
-	VA_END_COPY(aq);
-	if (len < 0 || (*ret = malloc(size = len + 1)) == NULL)
-		return -1;
-	return vsnprintf(*ret, size, format, ap);
-}
+// 	VA_COPY(aq, ap);
+// 	len = vsnprintf(NULL, 0, format, aq);
+// 	VA_END_COPY(aq);
+// 	if (len < 0 || (*ret = malloc(size = len + 1)) == NULL)
+// 		return -1;
+// 	return vsnprintf(*ret, size, format, ap);
+// }
 #endif	/* !HAVE_VASPRINTF */
 
 #if !HAVE_SNPRINTF
@@ -1525,30 +1525,30 @@ rpl_snprintf(va_alist) va_dcl
 }
 #endif	/* !HAVE_SNPRINTF */
 
-#if !HAVE_ASPRINTF
-#if HAVE_STDARG_H
-int
-rpl_asprintf(char **ret, const char *format, ...)
-#else
-int
-rpl_asprintf(va_alist) va_dcl
-#endif	/* HAVE_STDARG_H */
-{
-#if !HAVE_STDARG_H
-	char **ret;
-	char *format;
-#endif	/* HAVE_STDARG_H */
-	va_list ap;
-	int len;
+// #if !HAVE_ASPRINTF
+// #if HAVE_STDARG_H
+// int
+// rpl_asprintf(char **ret, const char *format, ...)
+// #else
+// int
+// rpl_asprintf(va_alist) va_dcl
+// #endif	/* HAVE_STDARG_H */
+// {
+// #if !HAVE_STDARG_H
+// 	char **ret;
+// 	char *format;
+// #endif	/* HAVE_STDARG_H */
+// 	va_list ap;
+// 	int len;
 
-	VA_START(ap, format);
-	VA_SHIFT(ap, ret, char **);
-	VA_SHIFT(ap, format, const char *);
-	len = vasprintf(ret, format, ap);
-	va_end(ap);
-	return len;
-}
-#endif	/* !HAVE_ASPRINTF */
+// 	VA_START(ap, format);
+// 	VA_SHIFT(ap, ret, char **);
+// 	VA_SHIFT(ap, format, const char *);
+// 	len = vasprintf(ret, format, ap);
+// 	va_end(ap);
+// 	return len;
+// }
+// #endif	/* !HAVE_ASPRINTF */
 #else	/* Dummy declaration to avoid empty translation unit warnings. */
 int main(void);
 #endif	/* !HAVE_SNPRINTF || !HAVE_VSNPRINTF || !HAVE_ASPRINTF || [...] */

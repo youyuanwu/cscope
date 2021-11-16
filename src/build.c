@@ -71,7 +71,9 @@ char	*reffile = reffile_buf;	/* cross-reference file path name */
 char	*newreffile;		/* new cross-reference file name */
 FILE	*newrefs;		/* new cross-reference */
 FILE	*postings;		/* new inverted index postings */
-int	symrefs = -1;		/* cross-reference file */
+// TODO: remove
+// int	symrefs = -1;		/* cross-reference file */
+FILE * symrefsf;
 
 INVCONTROL invcontrol;		/* inverted file control structure */
 
@@ -106,8 +108,8 @@ cscope: cannot create inverted index; ignoring -q option\n");
     fprintf(stderr, "\
 cscope: removed files %s and %s\n", 
 	    newinvname, newinvpost);
-    unlink(newinvname);
-    unlink(newinvpost);
+    remove(newinvname);
+    remove(newinvpost);
 }
 
 
@@ -162,7 +164,7 @@ void setup_build_filenames(char *reffile)
 void
 opendatabase(void)
 {
-    if ((symrefs = vpopen(reffile, O_BINARY | O_RDONLY)) == -1) {
+    if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
 	cannotopen(reffile);
 	myexit(1);
     }
@@ -181,8 +183,9 @@ opendatabase(void)
 void
 rebuild(void)
 {
-    close(symrefs);
-    if (invertedindex == YES) {
+    //close(symrefs);
+    fclose(symrefsf);
+	if (invertedindex == YES) {
 	invclose(&invcontrol);
 	nsrcoffset = 0;
 	npostings = 0;
@@ -286,8 +289,8 @@ cscope: -q option mismatch between command line and old symbol database\n");
 		if (invertedindex == NO) {
 		    posterr("cscope: removed files %s and %s\n",
 			    invname, invpost);
-		    unlink(invname);
-		    unlink(invpost);
+		    remove(invname);
+		    remove(invpost);
 		}
 		goto outofdate;
 	    }
@@ -338,7 +341,7 @@ cscope: converting to new symbol database file format\n");
 	    goto force;
 	}
 	/* reopen the old cross-reference file for fast scanning */
-	if ((symrefs = vpopen(reffile, O_BINARY | O_RDONLY)) == -1) {
+	if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
 	    postfatal("cscope: cannot open file %s\n", reffile);
 	    /* NOTREACHED */
 	}
@@ -363,7 +366,7 @@ cscope: converting to new symbol database file format\n");
     }
     putheader(newdir);
     fileversion = FILEVERSION;
-    if (buildonly == YES && verbosemode != YES && !isatty(0)) {
+    if (buildonly == YES && verbosemode != YES) { // Disable atty for now // && !isatty(0)) {
 	interactive = NO;
     } else {
 	searchcount = 0;
@@ -453,44 +456,46 @@ cscope: converting to new symbol database file format\n");
 	/* NOTREACHED */
     }
 
+	// disable inverted index for now
+	cannotindex();
     /* create the inverted index if requested */
-    if (invertedindex == YES) {
-	char	sortcommand[PATHLEN + 1];
+//     if (invertedindex == YES) {
+// 	char	sortcommand[PATHLEN + 1];
 
-	if (fflush(postings) == EOF) {
-	    cannotwrite(temp1);
-	    /* NOTREACHED */
-	}
-	fstat(fileno(postings), &statstruct);
-	fclose(postings);
-#ifdef WIN32
-	snprintf(sortcommand, sizeof(sortcommand), "set LC_ALL=C && sort -T %s %s", tmpdir, temp1);
-#else	
-	snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s", tmpdir, temp1);
-#endif
-	if ((postings = mypopen(sortcommand, "r")) == NULL) {
-	    fprintf(stderr, "cscope: cannot open pipe to sort command\n");
-	    cannotindex();
-	} else {
-	    if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
-		movefile(newinvname, invname);
-		movefile(newinvpost, invpost);
-	    } else {
-		cannotindex();
-	    }
-	    mypclose(postings);
-	}
-	unlink(temp1);
-	free(srcoffset);
-    }
+// 	if (fflush(postings) == EOF) {
+// 	    cannotwrite(temp1);
+// 	    /* NOTREACHED */
+// 	}
+// 	fstat(fileno(postings), &statstruct);
+// 	fclose(postings);
+// #ifdef WIN32
+// 	snprintf(sortcommand, sizeof(sortcommand), "set LC_ALL=C && sort -T %s %s", tmpdir, temp1);
+// #else	
+// 	snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s", tmpdir, temp1);
+// #endif
+// 	if ((postings = mypopen(sortcommand, "r")) == NULL) {
+// 	    fprintf(stderr, "cscope: cannot open pipe to sort command\n");
+// 	    cannotindex();
+// 	} else {
+// 	    if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
+// 		movefile(newinvname, invname);
+// 		movefile(newinvpost, invpost);
+// 	    } else {
+// 		cannotindex();
+// 	    }
+// 	    mypclose(postings);
+// 	}
+// 	unlink(temp1);
+// 	free(srcoffset);
+//     }
     /* rewrite the header with the trailer offset and final option list */
     rewind(newrefs);
     putheader(newdir);
     fclose(newrefs);
 	
     /* close the old database file */
-    if (symrefs >= 0) {
-	close(symrefs);
+    if (symrefsf != NULL) {
+	fclose(symrefsf);
     }
     if (oldrefs != NULL) {
 	fclose(oldrefs);
@@ -738,7 +743,7 @@ copyinverted(void)
 static void
 movefile(char *new, char *old)
 {
-    unlink(old);
+    remove(old);
     if (rename(new, old) == -1) {
 	myperror("cscope");
 	postfatal("cscope: cannot rename file %s to file %s\n",

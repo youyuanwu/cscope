@@ -50,12 +50,14 @@
 #endif
 
 #include "w32utils.h"
-
 #ifdef WIN32
 #define	DIRSEPS	" ,;"
+#include <Windows.h> // for getcwd
 #else
+#include <unistd.h> // for getcwd
 #define	DIRSEPS	" ,:"	/* directory list separators */
-#endif
+#endif 
+
 #define	DIRINC	10	/* directory list size increment */
 #define HASHMOD	2003	/* must be a prime number */
 #define	SRCINC	HASHMOD	/* source file list size increment */
@@ -310,9 +312,9 @@ makefilelist(void)
     }
 
     /* see if a file name file exists */
-    if (namefile == NULL && vpaccess(NAMEFILE, READ) == 0) {
-	namefile = NAMEFILE;
-    }
+	if (namefile == NULL && vpaccess(NAMEFILE, READ) == 0) {
+		namefile = NAMEFILE;
+	}
 
     if (namefile == NULL) {
 	/* No namefile --> make a list of all the source files
@@ -520,8 +522,8 @@ scan_dir(const char *adir, BOOL recurse_dir)
                                             && S_ISDIR(buf.st_mode) ) {
 						scan_dir(path, recurse_dir);
 					} else if (issrcfile(path)
-						   && infilelist(path) == NO
-						   && access(path, R_OK) == 0) {
+						   && infilelist(path) == NO) {
+						//   && access(path, R_OK) == 0) {
 						addsrcfile(path);
 					}
 				}
@@ -633,13 +635,13 @@ incfile(char *file, char *type)
 	    snprintf(path, sizeof(path), "%.*s/%s",
 		    (int)(PATHLEN - 2 - file_len), incdirs[i],
 		    file);
-            if (access(compath(path), READ) == 0) {
-                struct stat st;
-                if( 0 == stat(path,&st) && S_ISREG(st.st_mode) ) {
-                     addsrcfile(path);
-                }
+            // if (access(compath(path), READ) == 0) {
+            //     struct stat st;
+            //     if( 0 == stat(path,&st) && S_ISREG(st.st_mode) ) {
+            //          addsrcfile(path);
+            //     }
 		break;
-	    }
+	    // }
 	}
     }
 }

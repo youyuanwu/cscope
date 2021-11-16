@@ -40,6 +40,10 @@
 #ifndef CSCOPE_VP_H
 #define CSCOPE_VP_H
 
+#ifdef WIN32
+#include "global.h"
+#endif
+
 #define MAXPATH	200		/* max length for entire name */
 
 #ifdef HAVE_CONFIG_H

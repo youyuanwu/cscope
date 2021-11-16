@@ -39,25 +39,25 @@
 
 #define OPENFLAG_READ	0
 
-int
-vpopen(char *path, int oflag)
-{
-	char	buf[MAXPATH + 1];
-	int	returncode;
-	int	i;
+// int
+// vpopen(char *path, int oflag)
+// {
+// 	char	buf[MAXPATH + 1];
+// 	int	returncode;
+// 	int	i;
 
-	if ((returncode = myopen(path, oflag, 0666)) == -1 && path[0] != '/' &&
-#ifdef WIN32
-		path[0] != '\\' && path[1] != ':' &&
-#endif
-	    oflag == OPENFLAG_READ) {
-		vpinit(NULL);
-		for (i = 1; i < vpndirs; i++) {
-			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], path);
-			if ((returncode = myopen(buf, oflag, 0666)) != -1) {
-				break;
-			}
-		}
-	}
-	return(returncode);
-}
+// 	if ((returncode = myopen(path, oflag, 0666)) == -1 && path[0] != '/' &&
+// #ifdef WIN32
+// 		path[0] != '\\' && path[1] != ':' &&
+// #endif
+// 	    oflag == OPENFLAG_READ) {
+// 		vpinit(NULL);
+// 		for (i = 1; i < vpndirs; i++) {
+// 			(void) snprintf(buf, sizeof(buf), "%s/%s", vpdirs[i], path);
+// 			if ((returncode = myopen(buf, oflag, 0666)) != -1) {
+// 				break;
+// 			}
+// 		}
+// 	}
+// 	return(returncode);
+// }

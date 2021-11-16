@@ -72,6 +72,13 @@
 #define DFLT_INCDIR "/usr/include"
 #endif
 
+// hacks to make win compile
+#undef KEY_RESIZE
+
+#ifdef WIN32
+#include "global.h"
+#endif
+
 /* note: these digraph character frequencies were calculated from possible 
    printable digraphs in the cross-reference for the C compiler */
 char	dichar1[] = " teisaprnl(of)=c";	/* 16 most frequent first chars */
@@ -533,24 +540,23 @@ cscope: TMPDIR to a valid directory\n");
     }
 
     /* create the temporary file names */
-#ifndef WIN32
-    orig_umask = umask(S_IRWXG|S_IRWXO);
-#endif
-    pid = getpid();
+    // orig_umask = umask(S_IRWXG|S_IRWXO);
+
+	// hardcode pid for now
+	pid = getpid();
+#ifdef WIN32
+    snprintf(tempdirpv, sizeof(tempdirpv), "%s\\cscope.%d", tmpdir, pid);
+	if(mkdir(tempdirpv)) {
+#else
     snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
-    if(mkdir(tempdirpv
-#ifndef WIN32
-		,S_IRWXU
+	if(mkdir(tempdirpv,S_IRWXU)) {
 #endif
-		)) {
 	fprintf(stderr, "\
 cscope: Could not create private temp dir %s\n",
 		tempdirpv);
 	myexit(1);
     }
-#ifndef WIN32
-    umask(orig_umask);
-#endif
+    // umask(orig_umask);
 
     snprintf(temp1, sizeof(temp1), "%s/cscope.1", tempdirpv);
     snprintf(temp2, sizeof(temp2), "%s/cscope.2", tempdirpv);
@@ -559,15 +565,14 @@ cscope: Could not create private temp dir %s\n",
     if (signal(SIGINT, SIG_IGN) != SIG_IGN) {
 	/* cleanup on the interrupt and quit signals */
 	signal(SIGINT, myexit);
-#ifndef WIN32
+#ifdef SIGQUIT
 	signal(SIGQUIT, myexit);
 #endif
     }
-#ifndef WIN32
     /* cleanup on the hangup signal */
+#ifdef SIGHUP
     signal(SIGHUP, myexit);
 #endif
-
     /* ditto the TERM signal */
     signal(SIGTERM, myexit);
 
@@ -575,30 +580,32 @@ cscope: Could not create private temp dir %s\n",
      * linemode, while in curses mode the "|" command can cause a pipe signal
      * too
      */
+#ifdef SIGPIPE
     signal(SIGPIPE, SIG_IGN);
+#endif
 
     /* if the database path is relative and it can't be created */
-    if (reffile[0] != '/' 
-#ifdef WIN32
-		&& reffile[0] != '\\' && reffile[1] != ':' 
-#endif
-		&& access(".", WRITE) != 0) {
+//     if (reffile[0] != '/' 
+// #ifdef WIN32
+// 		&& reffile[0] != '\\' && reffile[1] != ':' 
+// #endif
+// 		&& access(".", WRITE) != 0) {
 
-	/* put it in the home directory if the database may not be
-	 * up-to-date or doesn't exist in the relative directory,
-	 * so a database in the current directory will be
-	 * used instead of failing to open a non-existant database in
-	 * the home directory
-	 */
-	snprintf(path, sizeof(path), "%s/%s", home, reffile);
-	if (isuptodate == NO || access(path, READ) == 0) {
-	    reffile = my_strdup(path);
-	    snprintf(path, sizeof(path), "%s/%s", home, invname);
-	    invname = my_strdup(path);
-	    snprintf(path, sizeof(path), "%s/%s", home, invpost);
-	    invpost = my_strdup(path);
-	}
-    }
+// 	/* put it in the home directory if the database may not be
+// 	 * up-to-date or doesn't exist in the relative directory,
+// 	 * so a database in the current directory will be
+// 	 * used instead of failing to open a non-existant database in
+// 	 * the home directory
+// 	 */
+// 	snprintf(path, sizeof(path), "%s/%s", home, reffile);
+// 	if (isuptodate == NO || access(path, READ) == 0) {
+// 	    reffile = my_strdup(path);
+// 	    snprintf(path, sizeof(path), "%s/%s", home, invname);
+// 	    invname = my_strdup(path);
+// 	    snprintf(path, sizeof(path), "%s/%s", home, invpost);
+// 	    invpost = my_strdup(path);
+// 	}
+//     }
 
     if (linemode == NO) {
 	signal(SIGINT, SIG_IGN);	/* ignore interrupts */
@@ -964,7 +971,7 @@ cannotwrite(char *file)
 
     myperror(msg);	/* display the reason */
 
-    unlink(file);
+    remove(file);
     myexit(1);	/* calls exit(2), which closes files */
 }
 
@@ -1112,16 +1119,16 @@ myexit(int sig)
 	
 	/* remove any temporary files */
 	if (temp1[0] != '\0') {
-		unlink(temp1);
-		unlink(temp2);
-		rmdir(tempdirpv);		
+		remove(temp1);
+		remove(temp2);
+		remove(tempdirpv);	
 	}
 	/* restore the terminal to its original mode */
 	if (incurses == YES) {
 		exitcurses();
 	}
-#ifndef WIN32
 	/* dump core for debugging on the quit signal */
+#ifdef SIGQUIT
 	if (sig == SIGQUIT) {
 		abort();
 	}
@@ -1134,9 +1141,9 @@ myexit(int sig)
 	free_newbuildfiles();
 
 	if( remove_symfile_onexit == YES ) {
-		unlink( reffile );
-		unlink( invname );
-		unlink( invpost );
+		remove( reffile );
+		remove( invname );
+		remove( invpost );
 	}
 
 	exit(sig);

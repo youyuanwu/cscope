@@ -38,13 +38,13 @@
 /* private library */
 char	*compath(char *pathname);
 char	*egrepinit(char *egreppat);
-char	*logdir(char *name);
+// char	*logdir(char *name);
 char	*mybasename(char *path);
 FILE	*myfopen(char *path, char *mode);
 char	*mygetenv(char *variable, char *deflt);
-int	myopen(char *path, int flag, int mode);
-FILE	*mypopen(char *cmd, char *mode);
-int	mypclose(FILE *ptr);
+// int	myopen(char *path, int flag, int mode);
+// FILE	*mypopen(char *cmd, char *mode);
+// int	mypclose(FILE *ptr);
 FILE	*vpfopen(char *filename, char *type);
 void	egrepcaseless(int i);
 

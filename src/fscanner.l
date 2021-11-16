@@ -106,6 +106,9 @@ wsnl		[ \t\r\v\f\n]|{comment}
 /* flex options: stack of start conditions, and don't use yywrap() */
 %option stack
 %option noyywrap
+/* do not support interactive for now. skips unistd header*/
+%option never-interactive
+%option nounistd
 
 %start SDL
 %a 4000

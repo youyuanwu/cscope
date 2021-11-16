@@ -98,27 +98,29 @@ editall(void)
 void
 edit(char *file, char *linenum)
 {
-	char	msg[MSGLEN + 1];	/* message */
-	char	plusnum[NUMLEN + 20];	/* line number option: allow space for wordy line# flag */
-	char	*s;
+	// disable for now
 
-	file = filepath(file);
-	(void) snprintf(msg, sizeof(msg), "%s +%s %s", mybasename(editor), linenum, file);
-	postmsg(msg);
-	(void) snprintf(plusnum, sizeof(plusnum), lineflag, linenum);
-	/* if this is the more or page commands */
-	if (strcmp(s = mybasename(editor), "more") == 0 || strcmp(s, "page") == 0) {
+	// char	msg[MSGLEN + 1];	/* message */
+	// char	plusnum[NUMLEN + 20];	/* line number option: allow space for wordy line# flag */
+	// char	*s;
+
+	// file = filepath(file);
+	// (void) snprintf(msg, sizeof(msg), "%s +%s %s", mybasename(editor), linenum, file);
+	// postmsg(msg);
+	// (void) snprintf(plusnum, sizeof(plusnum), lineflag, linenum);
+	// /* if this is the more or page commands */
+	// if (strcmp(s = mybasename(editor), "more") == 0 || strcmp(s, "page") == 0) {
 		
-		/* get it to pause after displaying a file smaller than the screen
-		   length */
-		(void) execute(editor, editor, plusnum, file, "/dev/null", NULL);
-	}
-	else if (lineflagafterfile) {
-		(void) execute(editor, editor, file, plusnum, NULL);
-	}
-	else {
-		(void) execute(editor, editor, plusnum, file, NULL);
-	}
+	// 	/* get it to pause after displaying a file smaller than the screen
+	// 	   length */
+	// 	(void) execute(editor, editor, plusnum, file, "/dev/null", NULL);
+	// }
+	// else if (lineflagafterfile) {
+	// 	(void) execute(editor, editor, file, plusnum, NULL);
+	// }
+	// else {
+	// 	(void) execute(editor, editor, plusnum, file, NULL);
+	// }
 	clear();	/* redisplay screen */
 }
 

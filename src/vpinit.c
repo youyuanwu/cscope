@@ -35,7 +35,7 @@
 #include <stdio.h>	/* stderr */
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+// #include <unistd.h>
 #ifdef MSVC_WIN32
 #include <direct.h>	/* getcwd */
 #endif
@@ -44,6 +44,12 @@
 #include "library.h"
 #include "global.h"
 #include "constants.h"
+
+#ifdef WIN32
+#include <Windows.h> // for getcwd
+#else
+#include <unistd.h> // for getcwd
+#endif 
 
 #if !NOMALLOC
 char	**vpdirs;	/* directories (including current) in view path */
