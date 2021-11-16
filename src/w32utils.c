@@ -61,6 +61,7 @@ void sleep(int sec)
 }
 
 #else
+#include <stddef.h>
 char *get_shortpath(char *path)
 {
     return path;
