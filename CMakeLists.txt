@@ -19,21 +19,21 @@ if(WIN32)
 endif()
 
 # bison targets
-find_package(BISON)
-if(NOT BISON_FOUND)
-    message(FATAL_ERROR "bison not found")
-endif()
-BISON_TARGET(egrep ${cscope_SOURCE_DIR}/src/egrep.y ${cscope_SOURCE_DIR}/gen/egrep.c)
-if(NOT BISON_egrep_DEFINED)
-message(FATAL_ERROR "bison failed gen")
-endif()
+# find_package(BISON)
+# if(NOT BISON_FOUND)
+#     message(FATAL_ERROR "bison not found")
+# endif()
+# BISON_TARGET(egrep ${cscope_SOURCE_DIR}/src/egrep.y ${cscope_SOURCE_DIR}/gen/egrep.c)
+# if(NOT BISON_egrep_DEFINED)
+# message(FATAL_ERROR "bison failed gen")
+# endif()
 
-# flex targets
-find_package(FLEX)
-if(NOT FLEX_FOUND)
-    message(FATAL_ERROR "flex not found")
-endif()
-FLEX_TARGET(fscanner ${cscope_SOURCE_DIR}/src/fscanner.l ${cscope_SOURCE_DIR}/gen/fscanner.c)
+# # flex targets
+# find_package(FLEX)
+# if(NOT FLEX_FOUND)
+#     message(FATAL_ERROR "flex not found")
+# endif()
+# FLEX_TARGET(fscanner ${cscope_SOURCE_DIR}/src/fscanner.l ${cscope_SOURCE_DIR}/gen/fscanner.c)
 
 # assume stdc lib is present
 
@@ -155,6 +155,8 @@ configure_file(${cscope_SOURCE_DIR}/cmakeconfig.h.in ${cscope_CONFIG_H_OUTPUT} @
 file(GLOB SOURCES
     include/*.h
     src/*.c
+    gen/*.c
+    gen/*.h
 )
 
 add_executable("cscope"
