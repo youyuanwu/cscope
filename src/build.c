@@ -162,7 +162,7 @@ void setup_build_filenames(char *reffile)
 void
 opendatabase(void)
 {
-    if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
+    if ((symrefsf = vpfopen(reffile, "rb")) == NULL) {
 	cannotopen(reffile);
 	myexit(1);
     }
@@ -332,7 +332,7 @@ cscope: converting to new symbol database file format\n");
 	    goto force;
 	}
 	/* reopen the old cross-reference file for fast scanning */
-	if ((symrefsf = vpfopen(reffile, "r")) == NULL) {
+	if ((symrefsf = vpfopen(reffile, "rb")) == NULL) {
 	    postfatal("cscope: cannot open file %s\n", reffile);
 	    /* NOTREACHED */
 	}
