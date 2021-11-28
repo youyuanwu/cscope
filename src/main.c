@@ -57,7 +57,9 @@
 #include <getopt.h>
 #endif
 
-#include <stdio.h> // windows link of remove()
+#ifndef WIN32
+#include <unistd.h> // rmdir 
+#endif
 
 /* defaults for unset environment variables */
 #define	EDITOR	"vi"
