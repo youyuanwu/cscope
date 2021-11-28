@@ -75,11 +75,7 @@
 #endif
 
 // hacks to make win compile
-#undef KEY_RESIZE
-
-#ifdef WIN32
-#include "global.h"
-#endif
+// #undef KEY_RESIZE
 
 /* note: these digraph character frequencies were calculated from possible 
    printable digraphs in the cross-reference for the C compiler */
@@ -138,7 +134,7 @@ static	void	usage(void);
 void	fixkeypad();
 #endif
 
-#if defined(KEY_RESIZE) && !defined(__DJGPP__)
+#if defined(KEY_RESIZE) && !defined(__DJGPP__) && !defined(WIN32)
 void 
 sigwinch_handler(int sig, siginfo_t *info, void *unused)
 {
@@ -311,7 +307,7 @@ main(int argc, char **argv)
     unsigned int i;
     pid_t pid;
     struct stat	stat_buf;
-#if defined(KEY_RESIZE) && !defined(__DJGPP__)
+#if defined(KEY_RESIZE) && !defined(__DJGPP__) && !defined(WIN32)
     struct sigaction winch_action;
 #endif
     mode_t orig_umask;
@@ -503,7 +499,13 @@ cscope: reffile too long, cannot be > %d characters\n", sizeof(path) - 3);
     shell = mygetenv("SHELL", SHELL);
     lineflag = mygetenv("CSCOPE_LINEFLAG", LINEFLAG);
     lineflagafterfile = getenv("CSCOPE_LINEFLAG_AFTER_FILE") ? 1 : 0;
-    tmpdir = mygetenv("TMPDIR", TMPDIR);
+    tmpdir = mygetenv(
+#ifdef WIN32
+		"TEMP"
+#else
+		"TMPDIR"
+#endif
+		, TMPDIR);
 
     /* XXX remove if/when clearerr() in dir.c does the right thing. */
     if (namefile && strcmp(namefile, "-") == 0 && !buildonly) {
@@ -523,23 +525,27 @@ cscope: TMPDIR to a valid directory\n");
     }
 
     /* create the temporary file names */
-    // orig_umask = umask(S_IRWXG|S_IRWXO);
-
-	// hardcode pid for now
-	pid = getpid();
-#ifdef WIN32
-    snprintf(tempdirpv, sizeof(tempdirpv), "%s\\cscope.%d", tmpdir, pid);
-	if(mkdir(tempdirpv)) {
-#else
-    snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
-	if(mkdir(tempdirpv,S_IRWXU)) {
+#ifndef WIN32
+    orig_umask = umask(S_IRWXG|S_IRWXO);
 #endif
-	fprintf(stderr, "\
+
+	pid = getpid();
+
+    snprintf(tempdirpv, sizeof(tempdirpv), "%s/cscope.%d", tmpdir, pid);
+	if(mkdir(tempdirpv
+#ifdef S_IRWXU
+	,S_IRWXU
+#endif
+	)) {
+		fprintf(stderr, "\
 cscope: Could not create private temp dir %s\n",
 		tempdirpv);
-	myexit(1);
+		myexit(1);
     }
-    // umask(orig_umask);
+
+#ifndef WIN32
+    umask(orig_umask);
+#endif
 
     snprintf(temp1, sizeof(temp1), "%s/cscope.1", tempdirpv);
     snprintf(temp2, sizeof(temp2), "%s/cscope.2", tempdirpv);
@@ -589,7 +595,7 @@ cscope: Could not create private temp dir %s\n",
     if (linemode == NO) {
 	signal(SIGINT, SIG_IGN);	/* ignore interrupts */
 
-#if defined(KEY_RESIZE) && !defined(__DJGPP__)
+#if defined(KEY_RESIZE) && !defined(__DJGPP__) && !defined(WIN32)
 	winch_action.sa_sigaction = sigwinch_handler;
 	sigemptyset(&winch_action.sa_mask);
 	winch_action.sa_flags = SA_SIGINFO;
