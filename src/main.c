@@ -57,7 +57,10 @@
 #include <getopt.h>
 #endif
 
-#ifndef WIN32
+#ifdef WIN32
+#include <direct.h> // rmdir
+#include <process.h> // getpid
+#else
 #include <unistd.h> // rmdir 
 #endif
 
