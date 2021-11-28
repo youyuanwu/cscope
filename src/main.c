@@ -57,6 +57,8 @@
 #include <getopt.h>
 #endif
 
+#include <stdio.h> // windows link of remove()
+
 /* defaults for unset environment variables */
 #define	EDITOR	"vi"
 #define HOME	"/"	/* no $HOME --> use root directory */
@@ -1084,7 +1086,7 @@ myexit(int sig)
 	if (temp1[0] != '\0') {
 		remove(temp1);
 		remove(temp2);
-		remove(tempdirpv);	
+		rmdir(tempdirpv);
 	}
 	/* restore the terminal to its original mode */
 	if (incurses == YES) {

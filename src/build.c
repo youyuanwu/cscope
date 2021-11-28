@@ -46,6 +46,7 @@
 #include "version.h"		/* for FILEVERSION */
 #include "vp.h"
 #include "cscopesort.h"
+#include <stdio.h> // some functions in windows are not linked if not included.
 
 #if defined(USE_NCURSES) && !defined(RENAMED_NCURSES)
 #include <ncurses.h>
