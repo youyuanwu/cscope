@@ -48,3 +48,5 @@ aclocal.m4
 
 build
 .vscode
+*.zip
+sha256sum.txt

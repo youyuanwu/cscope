@@ -20,3 +20,33 @@ jobs:
 
     - name: run build
       run: cmake --build build --config ${{ matrix.BUILD_TYPE }}
+
+    # only make windows release
+    - name: set release flag
+      id: release-flag
+      if: |
+        startsWith(github.ref, 'refs/tags/') &&
+        matrix.BUILD_TYPE == 'Release' &&
+        matrix.os == 'windows-latest'
+      run: echo "::set-output name=make_release::yes"
+
+    # - name: debug release flag
+    #   run: echo "make release ${{ steps.release-flag.outputs.make_release }}"
+    
+    # - name: debug if release flag
+    #   if: steps.release-flag.outputs.make_release == 'yes'
+    #   run: echo "make relase detected"
+
+    - name: prepare release
+      if:  steps.release-flag.outputs.make_release == 'yes'
+      run: |
+        Compress-Archive -Path build/Release -DestinationPath .\cscope-windows.zip
+        Get-FileHash .\cscope-windows.zip -Algorithm SHA256 | Select-Object -ExpandProperty Hash | Out-File sha256sum.txt
+
+    - name: make release
+      uses: softprops/action-gh-release@v1
+      if:  steps.release-flag.outputs.make_release == 'yes'
+      with:
+        files: |
+          cscope-windows.zip
+          sha256sum.txt
