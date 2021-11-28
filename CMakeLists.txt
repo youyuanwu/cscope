@@ -2,6 +2,8 @@ project(cscope)
 
 cmake_minimum_required(VERSION 3.16)
 
+add_subdirectory(sort)
+
 if(WIN32)
   message("fetching winflexbison programs")
   include(FetchContent)
@@ -189,8 +191,12 @@ endif()
 
 target_link_libraries(cscope
     PRIVATE ${CURSES_LIBRARIES}
+    PRIVATE cscope_sort
 )
 
 target_compile_definitions(cscope
     PRIVATE HAVE_CONFIG_H=1
 )
+
+# dependency testing needs to be turned off
+# enable_testing()

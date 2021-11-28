@@ -45,6 +45,7 @@
 #include "scanner.h"
 #include "version.h"		/* for FILEVERSION */
 #include "vp.h"
+#include "cscopesort.h"
 
 #if defined(USE_NCURSES) && !defined(RENAMED_NCURSES)
 #include <ncurses.h>
@@ -333,7 +334,7 @@ cscope: converting to new symbol database file format\n");
 	}
 	/* reopen the old cross-reference file for fast scanning */
 	if ((symrefsf = vpfopen(reffile, "rb")) == NULL) {
-	    postfatal("cscope: cannot open file %s\n", reffile);
+	    postfatal("cscope: cannot open old ref file %s\n", reffile);
 	    /* NOTREACHED */
 	}
 	/* get the first file name in the old cross-reference */
@@ -348,7 +349,7 @@ cscope: converting to new symbol database file format\n");
     }
     /* open the new cross-reference file */
     if ((newrefs = myfopen(newreffile, "wb")) == NULL) {
-	postfatal("cscope: cannot open file %s\n", reffile);
+	postfatal("cscope: cannot open new ref file %s\n", reffile);
 	/* NOTREACHED */
     }
     if (invertedindex == YES && (postings = myfopen(temp1, "wb")) == NULL) {
@@ -448,33 +449,57 @@ cscope: converting to new symbol database file format\n");
     }
 
 	// disable inverted index for now
-	cannotindex();
+	// cannotindex();
     /* create the inverted index if requested */
-    // if (invertedindex == YES) {
-	// char	sortcommand[PATHLEN + 1];
+    if (invertedindex == YES) {
+		char sortcommand[PATHLEN + 1];
 
-	// if (fflush(postings) == EOF) {
-	//     cannotwrite(temp1);
-	//     /* NOTREACHED */
-	// }
-	// fstat(fileno(postings), &statstruct);
-	// fclose(postings);
-	// snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s", tmpdir, temp1);
-	// if ((postings = mypopen(sortcommand, "r")) == NULL) {
-	//     fprintf(stderr, "cscope: cannot open pipe to sort command\n");
-	//     cannotindex();
-	// } else {
-	//     if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
-	// 	movefile(newinvname, invname);
-	// 	movefile(newinvpost, invpost);
-	//     } else {
-	// 	cannotindex();
-	//     }
-	//     mypclose(postings);
-	// }
-	// remove(temp1);
-	// free(srcoffset);
-    // }
+		if (fflush(postings) == EOF) {
+			cannotwrite(temp1);
+			/* NOTREACHED */
+		}
+		fstat(fileno(postings), &statstruct);
+		fclose(postings);
+	
+		// debug:
+		//snprintf(sortcommand, sizeof(sortcommand), "env LC_ALL=C sort -T %s %s\n", tmpdir, temp1);
+		//fprintf(stderr, sortcommand);
+		//fprintf(stderr,"newinvname %s, newinvpost %s\n", newinvname, newinvpost);
+		// debug end
+
+		//fprintf(stderr,"opening temp1");
+		FILE * ftemp1 = myfopen(temp1, "r");
+		//fprintf(stderr,"opened temp1");
+		if(ftemp1 == NULL)
+		{
+			fprintf(stderr, "cscope: cannot temp1 file\n");
+			cannotindex();
+			goto invindexfinish;
+		}
+
+		//fprintf(stderr,"sorting file in build.c");
+
+		if ((postings = SortFile(ftemp1)) == NULL) {
+			fprintf(stderr, "cscope: cannot open pipe to sort command\n");
+			cannotindex();
+			goto invindexfinish;
+		} else {
+			if ((totalterms = invmake(newinvname, newinvpost, postings)) > 0) {
+			movefile(newinvname, invname);
+			movefile(newinvpost, invpost);
+			} else {
+			cannotindex();
+			}
+			fclose(postings);
+		}
+invindexfinish:
+		if(ftemp1)
+		{
+			fclose(ftemp1);
+		}
+		remove(temp1);
+		free(srcoffset);
+    }
     /* rewrite the header with the trailer offset and final option list */
     rewind(newrefs);
     putheader(newdir);
